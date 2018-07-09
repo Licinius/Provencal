@@ -12,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Class;
@@ -62,7 +61,6 @@ public class MainApp extends Application {
             rootLayout = (BorderPane) loader.load();
             scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
-            primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             primaryStage.show();
             listOverviewController = loader.getController();
             listOverviewController.setMainApp(this);

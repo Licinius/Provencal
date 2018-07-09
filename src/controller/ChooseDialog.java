@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -69,7 +68,6 @@ public class ChooseDialog implements Runnable{
             dialogStage.setTitle("Question in class");
             dialogStage.initOwner(mainApp.getPrimaryStage());
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
             boolean closed = false;
