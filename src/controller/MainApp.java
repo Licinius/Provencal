@@ -1,8 +1,9 @@
 package controller;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
+import factory.QuestionFactory;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -12,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Class;
@@ -36,7 +38,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Kadoc");
+        this.primaryStage.setTitle("Provençal le Gaulois");
         initRootLayout();
         Task<Void> classifyTask = new Task<Void>() {
             @Override
@@ -61,6 +63,7 @@ public class MainApp extends Application {
             rootLayout = (BorderPane) loader.load();
             scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+            primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             primaryStage.show();
             listOverviewController = loader.getController();
             listOverviewController.setMainApp(this);
@@ -73,68 +76,15 @@ public class MainApp extends Application {
      * Classify the questions and update the progress or open a dialog if needed
      */
     public void classifyQuestions() {
-    	//keywordsClasses'll simulate the applications of classes
-    	ArrayList<Class> classes = new ArrayList<Class>();
-    	ArrayList<String> keywords1 = new ArrayList<String>();
-    	keywords1.add("truc");keywords1.add("toto");
-    	Class class1 = new Class("A",keywords1);
-    	ArrayList<String> keywords2 = new ArrayList<String>();
-    	keywords2.add("pouet");keywords2.add("toto");
-    	Class class2 = new Class("B",keywords2);
+    	QuestionFactory questionFactory = new QuestionFactory();
+    	CountDownLatch countDownLatch = new CountDownLatch(1);
+    	Platform.runLater(
+    			new LoadingScreen(this, countDownLatch)
+		);
+    	String filepath = "src/resources/questions/questions.ser";
+    	HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
+    	countDownLatch.countDown();
     	
-    	classes.add(class1);classes.add(class2);
-		ArrayList<String> questions = new ArrayList<>();
-		questions.add("toto");
-	    questions.add("machin");questions.add("machin");
-	    questions.add("pouet");
-	    questions.add("toto");
-	    questions.add("toto");questions.add("machin");
-	    questions.add("something");
-		int iteration = 0; //iteration can be the id currently test
-    	int total = questions.size(); //Total can be the max id 
-    	//Loop'll simulate the application looping on the questions
-    	for(String s : questions) {
-    		try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		Class winner = null;
-    		for(Class c : classes) {
-    			if (c.contains(s)) {
-    				if(winner == null)
-    					winner = c;
-    				else {//How to display the choose Dialog
-    					if(winner.getQuestions().size()>0) {
-	    					CountDownLatch finishCountDown = new CountDownLatch(1);//Semaphore
-	    					Platform.runLater(
-	    						new ChooseDialog(this,winner)
-	    							.withCountDownLatch(finishCountDown)
-	    					);
-	    					try {
-								finishCountDown.await();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-    					}
-    	            }
-    			}
-    		}
-    		if(winner != null) {
-    			winner.addQuestion(new Question());
-	    		if(!classData.contains(winner)) 
-	    			classData.add(winner);
-	    		else {
-	    		    int index = classData.indexOf(winner);
-	    		    if (index >= 0) {
-	    		    	classData.set(index, winner);
-	    		    }
-	    		}
-    		}
-    		iteration++;
-    		progress.set((double)iteration/total);//How to set the progress
-    	}    	
     }
     
     /**
