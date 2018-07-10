@@ -39,6 +39,7 @@ public class KeyBindingDialog implements Runnable{
 	            dialogStage.initModality(Modality.WINDOW_MODAL);
 	            Scene scene = new Scene(page);
 	            dialogStage.setScene(scene);
+	            dialogStage.sizeToScene();
 	            dialogStage.showAndWait();
 	        } catch (IOException e) {
 	            e.printStackTrace();
