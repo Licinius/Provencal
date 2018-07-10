@@ -82,8 +82,7 @@ public class MainApp extends Application {
     			new LoadingScreen(this, countDownLatch)
 		);
     	String filepath = "src/resources/questions/questions.ser";
-    	//TO DO
-    	//HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
+    	HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
     	countDownLatch.countDown();
     	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(
@@ -94,10 +93,17 @@ public class MainApp extends Application {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-    	
-    	Platform.runLater(
-    			new ChooseDialog(this,new Question())
-    	);
+    	for(Question question : questions.values()) {
+    		countDownLatch = new CountDownLatch(1);
+        	Platform.runLater(
+        			new ChooseDialog(this,question).withCountDownLatch(countDownLatch)
+        	);
+        	try {
+				countDownLatch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+    	}
     }
     
     /**

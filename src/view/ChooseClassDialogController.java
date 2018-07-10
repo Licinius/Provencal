@@ -1,18 +1,15 @@
 package view;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import controller.MainApp;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import model.Question;
 /**
  * Controller for the view ChooseClassDialog
@@ -29,7 +26,6 @@ public class ChooseClassDialogController {
 	
 	private MainApp mainApp;
 	private HashMap<Pane,QuestionViewController> panesControllers;
-	private boolean removed;
 	
 	/**
 	 * Init the panesControllers to an empty HashMap and
@@ -37,7 +33,6 @@ public class ChooseClassDialogController {
 	 */
 	public void initialize() {
 		panesControllers = new HashMap<Pane, QuestionViewController>();
-		removed = false;
 	}
 	
 	/**
@@ -69,55 +64,8 @@ public class ChooseClassDialogController {
         gridPane.add(questionPane, 0, 0);
 	}
 	
-	/**
-	 * This function is used by the doNothing button to close the window
-	 */
-	@FXML
-	private void doNothingButtonAction(){
-		removed = false;
-	    Stage stage = (Stage) doNothingButton.getScene().getWindow();
-	    stage.close();
-	}
+
+
 	
-	/**
-	 * This function is used by the remove button to change the attribute removed to true
-	 */
-	@FXML
-	private void removeButtonAction() {
-		QuestionViewController questionViewController;
-		for(Node n : gridPane.getChildren()) {
-			questionViewController = panesControllers.get(n);
-			if(questionViewController.isSelected()) {
-				removed = true;
-				Stage stage = (Stage) removeButton.getScene().getWindow();
-			    stage.close();
-			    break;
-			}
-		}
-	}
-	
-	/**
-	 * This function loop through the GridPane to find the questions selected
-	 * @return An ArrayList of selectedQuestion
-	 */
-	public ArrayList<Question> getSelectedQuestion() {
-		ArrayList<Question> questions = new ArrayList<Question>();
-		QuestionViewController questionViewController;
-		for(Node n : gridPane.getChildren()) {
-			questionViewController = panesControllers.get(n);
-			if(questionViewController.isSelected()) {
-				questions.add(questionViewController.getQuestion());
-			}
-		}
-		return questions;
-	}
-	
-	/**
-	 * Return the attribute removed
-	 * @return True if the button "Remove" has been clicked
-	 */
-	public boolean isRemoved() {
-		return removed;
-	}
 
 }
