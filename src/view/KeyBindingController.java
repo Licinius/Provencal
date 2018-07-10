@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 public class KeyBindingController {
 	@FXML
@@ -21,12 +22,14 @@ public class KeyBindingController {
 	private ArrayList<TextField> classNameFields;
 	private ArrayList<KeyBindingField> keyBindingFields;
 	private int row;
+	private boolean validated;
 	
 	@FXML
 	private void initialize() {
 		classNameFields = new ArrayList<TextField>();
 		keyBindingFields = new ArrayList<KeyBindingField>();
 		row = 1;
+		validated = false;
 		createRow();
 		
 	}
@@ -37,9 +40,20 @@ public class KeyBindingController {
 	@FXML
 	private void handleAddClass() {
 		createRow();
-		
 		//Adapt the scene to the new row
 		gridPane.getScene().getWindow().sizeToScene();
+	}
+	/**
+	 * Handle the button validate, when clicked close the window
+	 */
+	@FXML
+	private void handleValidate() {
+		validated = true;
+		((Stage) gridPane.getScene().getWindow()).close();
+	}
+	
+	public boolean isValidated() {
+		return validated;
 	}
 	/**
 	 * Create a new row in the grid Pane à la

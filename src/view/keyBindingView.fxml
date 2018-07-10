@@ -27,7 +27,7 @@
                   <JFXButton fx:id="addClassbutton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#handleAddClass" text="Add Class" GridPane.columnIndex="2" />
                </children>
             </GridPane>
-            <JFXButton alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Validate" />
+            <JFXButton alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#handleValidate" text="Validate" />
          </children>
       </VBox>
    </children>
