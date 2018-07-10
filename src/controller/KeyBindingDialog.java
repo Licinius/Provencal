@@ -23,7 +23,7 @@ public class KeyBindingDialog implements Runnable{
 	 * Constructor of the Runnable
 	 * @param mainApp The controller mainApp 
 	 */
-	public KeyBindingDialog(MainApp mainApp,HashMap<KeyCode,Class> keyMapping){
+	public KeyBindingDialog(MainApp mainApp){
 		this.mainApp = mainApp;
 		this.keyMapping = keyMapping;
 	}
@@ -40,6 +40,7 @@ public class KeyBindingDialog implements Runnable{
 	            loader.setLocation(ChooseDialog.class.getResource("/view/keyBindingView.fxml"));
 	            page = loader.load();
 	            KeyBindingController controller = loader.getController();
+	            controller.setMainApp(this.mainApp);
 	            // Create the dialog Stage.
 	            dialogStage = new Stage();
 	            dialogStage.setTitle("Bind keys for classes");
@@ -51,9 +52,6 @@ public class KeyBindingDialog implements Runnable{
 	            dialogStage.sizeToScene();
 	            while(!controller.isValidated()) {
 		            dialogStage.showAndWait();
-		            if(controller.isValidated()) {
-		            	keyMapping = controller.getKeyMapping();
-		            }
 	            }
 	            if(countDown != null) {
 	            	countDown.countDown();

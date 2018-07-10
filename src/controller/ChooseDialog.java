@@ -14,11 +14,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Class;
 import model.Question;
 import view.ChooseClassDialogController;
 /**
- * Open a dialog to choose if the question belong in a class
+ * Open a dialog to choose in wich class to put the question
  * @author Dell'omo
  */
 public class ChooseDialog implements Runnable{
@@ -26,18 +25,17 @@ public class ChooseDialog implements Runnable{
 	private CountDownLatch countDownLatch;
 	private AnchorPane page;
 	private Stage dialogStage;
-	private Class questionClass;
+	private Question question;
 	
 	/**
 	 * Constructor of the Runnable
-	 * @param mainApp The controller mainApp 
-	 * @param aClass The possible class	
+	 * @param mainApp The controller mainApp
 	 * @param question The question to put in the class
 	 */
-	public ChooseDialog(MainApp mainApp,Class aClass)
+	public ChooseDialog(MainApp mainApp,Question question)
 	{
 		this.mainApp = mainApp;
-		this.questionClass = aClass;
+		this.question = question;
 	}
 	
 	/**
@@ -62,7 +60,7 @@ public class ChooseDialog implements Runnable{
             loader.setLocation(ChooseDialog.class.getResource("/view/ChooseClassDialog.fxml"));
             page = (AnchorPane) loader.load();
             ChooseClassDialogController controller = loader.getController();
-            controller.initDialog(mainApp, questionClass);
+            controller.initDialog(mainApp,question);
             // Create the dialog Stage.
             dialogStage = new Stage();
             dialogStage.setResizable(false);
@@ -72,23 +70,8 @@ public class ChooseDialog implements Runnable{
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
-            boolean closed = false;
-            while(!closed) {
-	            // Show the dialog and wait until the user closes it
-	            dialogStage.showAndWait();
-	            if(controller.isRemoved()) {
-		            ArrayList<Question> questions = controller.getSelectedQuestion();
-		            //Create alert and wait for result
-		            if (this.createAlert(questions)){
-			            for(Question q : questions)
-			            	questionClass.getQuestions().remove(q);	
-			            closed = true;
-		            } else
-		               closed = false;
-	            }else
-	            	closed = true;
-            }
-            if(countDownLatch != null)//If the main stage must wait to continue
+	        dialogStage.showAndWait();
+	        if(countDownLatch != null)//If the main stage must wait to continue
             	countDownLatch.countDown();
         } catch (IOException e) {
             e.printStackTrace();

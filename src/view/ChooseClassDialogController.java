@@ -3,7 +3,6 @@ package view;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import controller.MainApp;
 import javafx.fxml.FXML;
@@ -14,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.Class;
 import model.Question;
 /**
  * Controller for the view ChooseClassDialog
@@ -62,23 +60,13 @@ public class ChooseClassDialogController {
 	/**
 	 * This function initialized the dialog with the question in the class
 	 * @param mainApp
-	 * @param questionClass
+	 * @param question
 	 * @throws IOException
 	 */
-	public void initDialog(MainApp mainApp, Class questionClass) throws IOException {
+	public void initDialog(MainApp mainApp, Question question) throws IOException {
 		this.mainApp = mainApp;
-        int widthMax = 3;
-        int height = 0;
-        Question question;
-        Iterator<Question> iteratorQuestion = questionClass.getQuestions().iterator();
-        while(iteratorQuestion.hasNext()){
-        	for(int width = 0; width<widthMax && iteratorQuestion.hasNext();width++) {
-        		question = iteratorQuestion.next();
-        		AnchorPane questionPane = getQuestionPane(question);
-        		gridPane.add(questionPane, width, height);
-        	}
-        	height++;
-        }
+        AnchorPane questionPane = getQuestionPane(question);
+        gridPane.add(questionPane, 0, 0);
 	}
 	
 	/**
@@ -131,4 +119,5 @@ public class ChooseClassDialogController {
 	public boolean isRemoved() {
 		return removed;
 	}
+
 }

@@ -18,6 +18,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Class;
+import model.Question;
 import view.ListOverviewController;
 /**
  * Main Controller of the application
@@ -32,13 +33,12 @@ public class MainApp extends Application {
     private ListOverviewController listOverviewController;
     private ObservableList<Class> classData = FXCollections.observableArrayList();
     private DoubleProperty progress = new SimpleDoubleProperty(0.0);
-    public MainApp() {
-    
-    }
+    private HashMap<KeyCode,Class> keyMapping;
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Provençal le Gaulois");
+        keyMapping = new HashMap<KeyCode,Class>();
         initRootLayout();
         Task<Void> classifyTask = new Task<Void>() {
             @Override
@@ -85,16 +85,19 @@ public class MainApp extends Application {
     	//TO DO
     	//HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
     	countDownLatch.countDown();
-    	HashMap<KeyCode,Class> keyMapping = new HashMap<KeyCode,Class>();
     	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(
-    			new KeyBindingDialog(this,keyMapping).withCountdown(countDownLatch)
+    			new KeyBindingDialog(this).withCountdown(countDownLatch)
     	);
     	try {
 			countDownLatch.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+    	
+    	Platform.runLater(
+    			new ChooseDialog(this,new Question())
+    	);
     }
     
     /**
@@ -117,6 +120,14 @@ public class MainApp extends Application {
      */
     public DoubleProperty getProgressProperty() {
     	return progress;
+    }
+    
+    public HashMap<KeyCode,Class> getKeyMapping(){
+    	return keyMapping;
+    }
+    
+    public void setKeyMapping(HashMap<KeyCode,Class> keyMapping) {
+    	this.keyMapping = keyMapping;
     }
     /**
      * Launch the application

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.jfoenix.controls.JFXButton;
 
+import controller.MainApp;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,7 +24,7 @@ public class KeyBindingController {
 	
 	private ArrayList<TextField> classNameFields;
 	private ArrayList<KeyBindingField> keyBindingFields;
-	private HashMap<KeyCode,Class> keyMapping;
+	private MainApp mainApp;
 	private int row;
 	private boolean validated;
 	
@@ -31,11 +32,14 @@ public class KeyBindingController {
 	private void initialize() {
 		classNameFields = new ArrayList<TextField>();
 		keyBindingFields = new ArrayList<KeyBindingField>();
-		keyMapping = new HashMap<>();
 		row = 1;
 		validated = false;
 		createRow();
 		
+	}
+	
+	public void setMainApp(MainApp mainApp) {
+		this.mainApp = mainApp;
 	}
 	/**
 	 * Fired when the user click on the button addClass 
@@ -54,6 +58,8 @@ public class KeyBindingController {
 	private void handleValidate() {
 		int index = 0;
 		int keyCodeCount = 0;
+
+		HashMap<KeyCode,Class> keyMapping = new HashMap<>();
 		for(KeyBindingField keyBindingField : keyBindingFields) {
 			if(keyBindingField.getCode() != null) {
 				keyMapping.put(
@@ -65,6 +71,7 @@ public class KeyBindingController {
 			index+=1;
 		}
 		validated = keyCodeCount>0;
+		mainApp.setKeyMapping(keyMapping);
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
 	
@@ -72,9 +79,6 @@ public class KeyBindingController {
 		return validated;
 	}
 	
-	public HashMap<KeyCode, Class> getKeyMapping(){
-		return this.keyMapping;
-	}
 	/**
 	 * Create a new row in the grid Pane à la
 	 * |class_name | KeyBindingField | Add Class |
