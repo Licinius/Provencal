@@ -1,5 +1,8 @@
 package controller;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -27,18 +30,18 @@ import view.ListOverviewController;
  */
 public class MainApp extends Application {
 
-    private Stage primaryStage;
+	private Stage primaryStage;
     private BorderPane rootLayout;
     private Scene scene;
     private ListOverviewController listOverviewController;
     private ObservableList<Class> classData = FXCollections.observableArrayList();
     private DoubleProperty progress = new SimpleDoubleProperty(0.0);
-    private HashMap<KeyCode,Class> keyMapping;
+    private Instance instance;
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Provençal le Gaulois");
-        keyMapping = new HashMap<KeyCode,Class>();
+        instance = new Instance();
         initRootLayout();
         Task<Void> classifyTask = new Task<Void>() {
             @Override
@@ -82,7 +85,7 @@ public class MainApp extends Application {
     			new LoadingScreen(this, countDownLatch)
 		);
     	String filepath = "src/resources/questions/questions.ser";
-    	HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
+    	instance.remainingQuestions = questionFactory.getAllSerializedQuestions(filepath);
     	countDownLatch.countDown();
     	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(
@@ -93,7 +96,7 @@ public class MainApp extends Application {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-    	for(Question question : questions.values()) {
+    	for(Question question : instance.remainingQuestions.values()) {
     		countDownLatch = new CountDownLatch(1);
         	Platform.runLater(
         			new ChooseDialog(this,question).withCountDownLatch(countDownLatch)
@@ -103,7 +106,8 @@ public class MainApp extends Application {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-        	classData.setAll(keyMapping.values());
+        	instance.remainingQuestions.remove(question);
+        	classData.setAll(instance.keyMapping.values());
     	}
     }
     
@@ -130,11 +134,15 @@ public class MainApp extends Application {
     }
     
     public HashMap<KeyCode,Class> getKeyMapping(){
-    	return keyMapping;
+    	return instance.keyMapping;
     }
     
     public void setKeyMapping(HashMap<KeyCode,Class> keyMapping) {
-    	this.keyMapping = keyMapping;
+    	 instance.keyMapping = keyMapping;
+    }
+    
+    public void saveInstance(String filepath) {
+    	instance.saveInstance(filepath);
     }
     /**
      * Launch the application
@@ -142,5 +150,27 @@ public class MainApp extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    private class Instance implements Serializable{
+		public HashMap<KeyCode,Class> keyMapping;
+    	public HashMap<Integer,Question> remainingQuestions;
+    	
+    	public Instance() {
+    		keyMapping = new HashMap<KeyCode,Class>();
+    		remainingQuestions = new HashMap<Integer,Question>();
+    	}
+    	
+		public void saveInstance(String filepath) {
+    		FileOutputStream fos;
+    		try {
+    			fos = new FileOutputStream(filepath);
+    			ObjectOutputStream oos = new ObjectOutputStream(fos);
+    			oos.writeObject(this);
+    			oos.close();
+    		} catch (IOException  e) {
+    			e.printStackTrace();
+    		}
+    	}
     }
 }

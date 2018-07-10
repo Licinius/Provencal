@@ -26,7 +26,7 @@ public class ListOverviewController {
     @FXML
     private TableColumn<Class, Number> numberQuestionColumn;
 
-	
+	private MainApp mainApp;
 	@FXML
 	private void initialize() {
 		nameClassColumn.setCellValueFactory(
@@ -36,8 +36,16 @@ public class ListOverviewController {
 	}
 	
 	public void setMainApp(MainApp mainApp) {
+		this.mainApp = mainApp;
 		classTable.setItems(mainApp.getClassData());
 		progressBar.progressProperty().bind(mainApp.getProgressProperty());
 		percentage.progressProperty().bind(mainApp.getProgressProperty());
+	}
+	/**
+	 * Allow to save the state of the Application
+	 */
+	@FXML
+	private void saveApplication() {
+		mainApp.saveInstance("instance.ser");
 	}
 }
