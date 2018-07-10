@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.jfoenix.controls.JFXButton;
 
@@ -12,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.Class;
 
 public class KeyBindingController {
 	@FXML
@@ -21,6 +23,7 @@ public class KeyBindingController {
 	
 	private ArrayList<TextField> classNameFields;
 	private ArrayList<KeyBindingField> keyBindingFields;
+	private HashMap<KeyCode,Class> keyMapping;
 	private int row;
 	private boolean validated;
 	
@@ -28,6 +31,7 @@ public class KeyBindingController {
 	private void initialize() {
 		classNameFields = new ArrayList<TextField>();
 		keyBindingFields = new ArrayList<KeyBindingField>();
+		keyMapping = new HashMap<>();
 		row = 1;
 		validated = false;
 		createRow();
@@ -49,11 +53,25 @@ public class KeyBindingController {
 	@FXML
 	private void handleValidate() {
 		validated = true;
+		int index = 0;
+		for(KeyBindingField keyBindingField : keyBindingFields) {
+			if(keyBindingField.getCode() != null) {
+				keyMapping.put(
+						keyBindingField.getCode(),
+						new Class(classNameFields.get(index).getText(),null)
+						);
+			}
+			index+=1;
+		}
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
 	
 	public boolean isValidated() {
 		return validated;
+	}
+	
+	public HashMap<KeyCode, Class> getKeyMapping(){
+		return this.keyMapping;
 	}
 	/**
 	 * Create a new row in the grid Pane à la

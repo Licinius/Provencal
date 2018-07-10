@@ -1,5 +1,6 @@
 package controller;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 import factory.QuestionFactory;
@@ -13,6 +14,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Class;
@@ -83,9 +85,9 @@ public class MainApp extends Application {
     	//TO DO
     	//HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
     	countDownLatch.countDown();
-    	
+    	HashMap<KeyCode,Class> keyMapping = new HashMap<KeyCode,Class>();
     	Platform.runLater(
-    			new KeyBindingDialog(this)
+    			new KeyBindingDialog(this,keyMapping)
     	);
     	
     }

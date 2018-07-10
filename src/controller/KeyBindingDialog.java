@@ -1,26 +1,29 @@
 package controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Class;
 import view.KeyBindingController;
-
 public class KeyBindingDialog implements Runnable{
 	private Stage dialogStage;
 	private AnchorPane page;
 	private MainApp mainApp;
-	
+	private HashMap<KeyCode,Class> keyMapping;
 	/**
 	 * Constructor of the Runnable
 	 * @param mainApp The controller mainApp 
 	 */
-	public KeyBindingDialog(MainApp mainApp){
+	public KeyBindingDialog(MainApp mainApp,HashMap<KeyCode,Class> keyMapping){
 		this.mainApp = mainApp;
+		this.keyMapping = keyMapping;
 	}
 	
 	@Override
@@ -40,7 +43,12 @@ public class KeyBindingDialog implements Runnable{
 	            Scene scene = new Scene(page);
 	            dialogStage.setScene(scene);
 	            dialogStage.sizeToScene();
-	            dialogStage.showAndWait();
+	            while(!controller.isValidated()) {
+		            dialogStage.showAndWait();
+		            if(controller.isValidated()) {
+		            	keyMapping = controller.getKeyMapping();
+		            }
+	            }
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
