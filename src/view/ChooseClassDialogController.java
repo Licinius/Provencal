@@ -6,7 +6,6 @@ import controller.MainApp;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -20,10 +19,6 @@ import model.Question;
 public class ChooseClassDialogController {
 	@FXML
 	private GridPane gridPane;
-	@FXML
-	private Button doNothingButton;
-	@FXML
-	private Button removeButton;
 	
 	private MainApp mainApp;
 	private Question question;

@@ -96,6 +96,8 @@ public class MainApp extends Application {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+    	int iteration = 0;
+    	int total = instance.remainingQuestions.size();
     	for(Question question : instance.remainingQuestions.values()) {
     		countDownLatch = new CountDownLatch(1);
         	Platform.runLater(
@@ -106,8 +108,10 @@ public class MainApp extends Application {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-        	instance.remainingQuestions.remove(question);
+        	instance.remainingQuestions.remove(question.getId());
         	classData.setAll(instance.keyMapping.values());
+        	iteration++;
+        	progress.set((double)iteration/total);//How to set the progress
     	}
     }
     
