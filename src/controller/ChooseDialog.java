@@ -1,15 +1,10 @@
 package controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -76,25 +71,6 @@ public class ChooseDialog implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-	}
-	
-	/**
-	 * This function create an alert and return the result
-	 * @param questions, an arrayList of Question
-	 * @return True if the user click OK, false otherwise
-	 */
-	private boolean createAlert(ArrayList<Question> questions) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Remove question");
-        alert.setHeaderText("Do you really want to remove this questions of the class ?");
-        String questionsId = ""; 
-        for(Question q: questions) {
-        	questionsId += "\n - " +q.getId();
-        }
-        alert.setContentText("The next questions will be removed"+questionsId);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.get() == ButtonType.OK;
 	}
 
 }
