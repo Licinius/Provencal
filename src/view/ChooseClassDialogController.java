@@ -1,15 +1,16 @@
 package view;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import controller.MainApp;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import model.Question;
 /**
  * Controller for the view ChooseClassDialog
@@ -25,14 +26,13 @@ public class ChooseClassDialogController {
 	private Button removeButton;
 	
 	private MainApp mainApp;
-	private HashMap<Pane,QuestionViewController> panesControllers;
-	
+	private Question question;
 	/**
 	 * Init the panesControllers to an empty HashMap and
 	 * The "removed" attributed to false
 	 */
 	public void initialize() {
-		panesControllers = new HashMap<Pane, QuestionViewController>();
+		gridPane.setOnKeyPressed(new KeyPressed());
 	}
 	
 	/**
@@ -48,7 +48,6 @@ public class ChooseClassDialogController {
 		AnchorPane pane = (AnchorPane)loader.load();
 		QuestionViewController controller = loader.getController();
 		controller.setQuestion(this.mainApp,question);
-		panesControllers.put(pane,controller);
 		return pane;
 	}
 	
@@ -60,12 +59,24 @@ public class ChooseClassDialogController {
 	 */
 	public void initDialog(MainApp mainApp, Question question) throws IOException {
 		this.mainApp = mainApp;
+		this.question = question;
         AnchorPane questionPane = getQuestionPane(question);
         gridPane.add(questionPane, 0, 0);
 	}
-	
+	/**
+	 * Event handler to read each keyPressed
+	 * @author Lenovo
+	 *
+	 */
+	private class KeyPressed implements EventHandler<KeyEvent>{
 
-
-	
-
+		@Override
+		public void handle(KeyEvent arg0) {
+			if(mainApp.getKeyMapping().containsKey(arg0.getCode())) {
+				mainApp.getKeyMapping().get(arg0.getCode()).addQuestion(question);
+				((Stage)gridPane.getScene().getWindow()).close();
+			}
+		}
+		
+	}
 }

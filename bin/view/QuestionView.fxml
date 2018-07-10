@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onMouseClicked="#selectPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.QuestionViewController">
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.QuestionViewController">
    <children>
       <GridPane fx:id="gridPane" prefHeight="307.0" prefWidth="381.0" style="-fx-border-style: solid solid solid solid;">
         <columnConstraints>

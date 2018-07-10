@@ -103,6 +103,7 @@ public class MainApp extends Application {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+        	classData.setAll(keyMapping.values());
     	}
     }
     
