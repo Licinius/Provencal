@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Group?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
@@ -10,25 +12,29 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ListOverviewController">
-   <center>
-      <StackPane>
-         <children>
-            <TableView fx:id="classTable">
-               <columns>
-                  <TableColumn fx:id="nameClassColumn" prefWidth="75.0" text="Classes" />
-                  <TableColumn fx:id="numberQuestionColumn" prefWidth="75.0" text="#Questions" />
-               </columns>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TableView>
-         </children>
-      </StackPane>
-   </center>
    <top>
-      <Group BorderPane.alignment="CENTER">
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Save" />
+                  <MenuItem mnemonicParsing="false" text="Save &amp; Close" />
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Mapping" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <HBox spacing="10.0">
                <children>
@@ -42,10 +48,23 @@
                   <Label text="Complete" />
                </children>
                <padding>
-                  <Insets bottom="10.0" top="20.0" />
+                  <Insets bottom="10.0" left="23.0" top="20.0" />
                </padding>
             </HBox>
+            <StackPane>
+               <children>
+                  <TableView fx:id="classTable">
+                     <columns>
+                        <TableColumn fx:id="nameClassColumn" prefWidth="75.0" text="Classes" />
+                        <TableColumn fx:id="numberQuestionColumn" prefWidth="75.0" text="#Questions" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </StackPane>
          </children>
-      </Group>
-   </top>
+      </VBox>
+   </center>
 </BorderPane>
