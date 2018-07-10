@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ public class KeyBindingDialog implements Runnable{
 	private AnchorPane page;
 	private MainApp mainApp;
 	private HashMap<KeyCode,Class> keyMapping;
+	private CountDownLatch countDown;
 	/**
 	 * Constructor of the Runnable
 	 * @param mainApp The controller mainApp 
@@ -26,6 +28,10 @@ public class KeyBindingDialog implements Runnable{
 		this.keyMapping = keyMapping;
 	}
 	
+	public KeyBindingDialog withCountdown(CountDownLatch countdown) {
+		this.countDown = countdown;
+		return this;
+	}
 	@Override
 	public void run() {
 		 try {
@@ -48,6 +54,9 @@ public class KeyBindingDialog implements Runnable{
 		            if(controller.isValidated()) {
 		            	keyMapping = controller.getKeyMapping();
 		            }
+	            }
+	            if(countDown != null) {
+	            	countDown.countDown();
 	            }
 	        } catch (IOException e) {
 	            e.printStackTrace();

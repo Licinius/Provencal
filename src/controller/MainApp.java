@@ -86,10 +86,15 @@ public class MainApp extends Application {
     	//HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
     	countDownLatch.countDown();
     	HashMap<KeyCode,Class> keyMapping = new HashMap<KeyCode,Class>();
+    	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(
-    			new KeyBindingDialog(this,keyMapping)
+    			new KeyBindingDialog(this,keyMapping).withCountdown(countDownLatch)
     	);
-    	
+    	try {
+			countDownLatch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     }
     
     /**

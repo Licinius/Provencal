@@ -52,17 +52,19 @@ public class KeyBindingController {
 	 */
 	@FXML
 	private void handleValidate() {
-		validated = true;
 		int index = 0;
+		int keyCodeCount = 0;
 		for(KeyBindingField keyBindingField : keyBindingFields) {
 			if(keyBindingField.getCode() != null) {
 				keyMapping.put(
 						keyBindingField.getCode(),
 						new Class(classNameFields.get(index).getText(),null)
 						);
+				keyCodeCount++;
 			}
 			index+=1;
 		}
+		validated = keyCodeCount>0;
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
 	
