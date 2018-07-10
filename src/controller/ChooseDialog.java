@@ -67,6 +67,7 @@ public class ChooseDialog implements Runnable{
             dialogStage = new Stage();
             dialogStage.setResizable(false);
             dialogStage.setTitle("Question in class");
+            dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             dialogStage.initOwner(mainApp.getPrimaryStage());
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(page);

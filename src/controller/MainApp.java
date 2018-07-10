@@ -1,6 +1,5 @@
 package controller;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 import factory.QuestionFactory;
@@ -17,7 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Class;
-import model.Question;
 import view.ListOverviewController;
 /**
  * Main Controller of the application
@@ -82,8 +80,13 @@ public class MainApp extends Application {
     			new LoadingScreen(this, countDownLatch)
 		);
     	String filepath = "src/resources/questions/questions.ser";
-    	HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
+    	//TO DO
+    	//HashMap<Integer,Question> questions = questionFactory.getAllSerializedQuestions(filepath);
     	countDownLatch.countDown();
+    	
+    	Platform.runLater(
+    			new KeyBindingDialog(this)
+    	);
     	
     }
     
