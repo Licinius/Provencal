@@ -18,20 +18,21 @@ public class Instance implements Serializable{
 		 */
 		private static final long serialVersionUID = 5428177751212085034L;
 		public HashMap<KeyCode,Class> keyMapping;
-    	public HashMap<Integer,Question> remainingQuestions;
-    	private int initialQuestionsCount;
+    	public HashMap<Integer,Question> questions;
+    	private int indexQuestions;
     	public Instance() {
     		keyMapping = new HashMap<KeyCode,Class>();
-    		remainingQuestions = new HashMap<Integer,Question>();
+    		questions = new HashMap<Integer,Question>();
+    		indexQuestions = 0;
     	}
     	
 		public void saveInstance(String filepath) {
-    		FileOutputStream fos;
+    		FileOutputStream fileOutputStream;
     		try {
-    			fos = new FileOutputStream(filepath);
-    			ObjectOutputStream oos = new ObjectOutputStream(fos);
-    			oos.writeObject(this);
-    			oos.close();
+    			fileOutputStream = new FileOutputStream(filepath);
+    			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+    			objectOutputStream.writeObject(this);
+    			objectOutputStream.close();
     		} catch (IOException  e) {
     			e.printStackTrace();
     		}
@@ -50,12 +51,5 @@ public class Instance implements Serializable{
 				System.out.println("Problem while loading...");
 			}
 			return instance;
-		}
-		public void setRemainingQuestions(HashMap<Integer,Question> questions) {
-			remainingQuestions = questions;
-			initialQuestionsCount = questions.size();
-		}
-		public int getInitialQuestionsCount() {
-			return initialQuestionsCount;
 		}
     }

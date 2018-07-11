@@ -28,6 +28,7 @@ public class ChooseClassDialogController {
 	 */
 	public void initialize() {
 		gridPane.setOnKeyPressed(new KeyPressed());
+		//gridPane.setOnKeyReleased(new KeyReleased());
 	}
 	
 	/**
@@ -42,7 +43,7 @@ public class ChooseClassDialogController {
 		loader.setLocation(getClass().getResource("/view/QuestionView.fxml"));
 		AnchorPane pane = (AnchorPane)loader.load();
 		QuestionViewController controller = loader.getController();
-		controller.setQuestion(this.mainApp,question);
+		controller.setQuestion(question);
 		return pane;
 	}
 	
@@ -71,7 +72,25 @@ public class ChooseClassDialogController {
 				mainApp.getKeyMapping().get(arg0.getCode()).addQuestion(question);
 				((Stage)gridPane.getScene().getWindow()).close();
 			}
+			switch(arg0.getCode()) {
+				case UP:
+					System.out.println("Premiere question");
+					break;
+				case DOWN:
+					System.out.println("Dernière question");
+					break;
+				case RIGHT:
+					System.out.println("Pass");
+					break;
+				case LEFT:
+					System.out.println("Right");
+					break;
+				case ENTER:
+					System.out.println("valider");
+				default:
+					break;
+			}
 		}
-		
 	}
+
 }

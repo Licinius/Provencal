@@ -85,18 +85,17 @@ public class MainApp extends Application {
      */
     public void classifyQuestions(String filepath) {
     	CountDownLatch countDownLatch;
-    	int iteration;
+    	int iteration=0;
     	if(filepath.isEmpty()) {
     		createNewInstance();
         	iteration = 0;
     	}else {
     		loadPreviousInstance(filepath);
-    		iteration = instance.getInitialQuestionsCount() - instance.remainingQuestions.size();
     		classData.setAll(instance.keyMapping.values());
     	}
-    	int total = instance.getInitialQuestionsCount();
+    	int total = instance.questions.size();
    		progress.set((double)iteration/total);//How to set the progress
-    	Iterator<Question> iteratorQuestions = instance.remainingQuestions.values().iterator();
+    	Iterator<Question> iteratorQuestions = instance.questions.values().iterator();
     	Question question;
     	while(iteratorQuestions.hasNext()) {
     		question = iteratorQuestions.next();
@@ -111,7 +110,6 @@ public class MainApp extends Application {
 			}
         	classData.setAll(instance.keyMapping.values());
         	iteration++;
-        	iteratorQuestions.remove(); //Also remove in the HashMap
         	progress.set((double)iteration/total);//How to set the progress
     	}
     }
@@ -131,7 +129,7 @@ public class MainApp extends Application {
     			new LoadingScreen(this, countDownLatch)
 		);
     	String filepathQuestions = "src/resources/questions/questions.ser";
-    	instance.setRemainingQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
+    	instance.questions = questionFactory.getAllSerializedQuestions(filepathQuestions);
     	countDownLatch.countDown();
     	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(
