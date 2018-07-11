@@ -1,23 +1,19 @@
 package controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Class;
 import view.KeyBindingController;
 public class KeyBindingDialog implements Runnable{
 	private Stage dialogStage;
 	private AnchorPane page;
 	private MainApp mainApp;
-	private HashMap<KeyCode,Class> keyMapping;
 	private CountDownLatch countDown;
 	/**
 	 * Constructor of the Runnable
@@ -25,7 +21,6 @@ public class KeyBindingDialog implements Runnable{
 	 */
 	public KeyBindingDialog(MainApp mainApp){
 		this.mainApp = mainApp;
-		this.keyMapping = keyMapping;
 	}
 	
 	public KeyBindingDialog withCountdown(CountDownLatch countdown) {
