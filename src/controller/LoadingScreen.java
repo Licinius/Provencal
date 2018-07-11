@@ -30,7 +30,7 @@ public class LoadingScreen implements Runnable{
 	        Stage dialogStage = new Stage();
 	        dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
 	        dialogStage.setResizable(false);
-	        dialogStage.initModality(Modality.WINDOW_MODAL);
+	        dialogStage.initModality(Modality.APPLICATION_MODAL);
 	        dialogStage.initStyle(StageStyle.TRANSPARENT);
 	        dialogStage.initOwner(mainApp.getPrimaryStage());
 	        Scene scene = new Scene(page);

@@ -1,10 +1,9 @@
 package controller;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import factory.QuestionFactory;
@@ -17,9 +16,13 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Class;
 import model.Question;
@@ -42,7 +45,7 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Provençal le Gaulois");
-        instance = new Instance();
+        showStartAlert();
         initRootLayout();
         Task<Void> classifyTask = new Task<Void>() {
             @Override
@@ -80,25 +83,31 @@ public class MainApp extends Application {
      * Classify the questions and update the progress or open a dialog if needed
      */
     public void classifyQuestions() {
-    	QuestionFactory questionFactory = new QuestionFactory();
-    	CountDownLatch countDownLatch = new CountDownLatch(1);
-    	Platform.runLater(
-    			new LoadingScreen(this, countDownLatch)
-		);
-    	String filepath = "src/resources/questions/questions.ser";
-    	instance.remainingQuestions = questionFactory.getAllSerializedQuestions(filepath);
-    	countDownLatch.countDown();
-    	countDownLatch  = new CountDownLatch(1);
-    	Platform.runLater(
-    			new KeyBindingDialog(this).withCountdown(countDownLatch)
-    	);
-    	try {
-			countDownLatch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-    	int iteration = 0;
-    	int total = instance.remainingQuestions.size();
+    	CountDownLatch countDownLatch;
+    	int iteration;
+    	if(instance.remainingQuestions.isEmpty()) {
+        	QuestionFactory questionFactory = new QuestionFactory();
+        	countDownLatch = new CountDownLatch(1);
+        	Platform.runLater(
+        			new LoadingScreen(this, countDownLatch)
+    		);
+        	String filepath = "src/resources/questions/questions.ser";
+        	instance.setRemainingQuestions(questionFactory.getAllSerializedQuestions(filepath));
+        	countDownLatch.countDown();
+        	countDownLatch  = new CountDownLatch(1);
+        	Platform.runLater(
+        			new KeyBindingDialog(this).withCountdown(countDownLatch)
+        	);
+        	try {
+    			countDownLatch.await();
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+        	iteration = 0;
+    	}else {
+    		iteration = instance.getInitialQuestionsCount() - instance.remainingQuestions.size();
+    	}
+    	int total = instance.getInitialQuestionsCount();
     	Iterator<Question> iteratorQuestions = instance.remainingQuestions.values().iterator();
     	Question question;
     	while(iteratorQuestions.hasNext()) {
@@ -118,7 +127,6 @@ public class MainApp extends Application {
         	progress.set((double)iteration/total);//How to set the progress
     	}
     }
-    
     /**
      * Returns the main stage.
      * @return
@@ -152,6 +160,26 @@ public class MainApp extends Application {
     public void saveInstance(String filepath) {
     	instance.saveInstance(filepath);
     }
+    
+    public void showStartAlert() {
+    	Alert alert = new Alert(AlertType.CONFIRMATION);
+    	alert.setTitle("Startup option");
+    	alert.setHeaderText("Choose your startup option");
+    	alert.setContentText("The load button allows you to load a previous save file.");
+
+    	ButtonType newButton = new ButtonType("New");
+    	ButtonType loadButton = new ButtonType("Load");
+    	alert.getButtonTypes().setAll(newButton, loadButton);
+
+    	Optional<ButtonType> result = alert.showAndWait();
+    	instance = new Instance();
+    	if (result.get() == loadButton){
+    		FileChooser fileChooser = new FileChooser();
+    		fileChooser.setTitle("Open Resource File");
+    		File file = fileChooser.showOpenDialog(new Stage());
+    		instance = instance.loadInstance(file.getAbsolutePath());
+    	}
+    }
     /**
      * Launch the application
      * @param args
@@ -160,25 +188,4 @@ public class MainApp extends Application {
         launch(args);
     }
     
-    private class Instance implements Serializable{
-		public HashMap<KeyCode,Class> keyMapping;
-    	public HashMap<Integer,Question> remainingQuestions;
-    	
-    	public Instance() {
-    		keyMapping = new HashMap<KeyCode,Class>();
-    		remainingQuestions = new HashMap<Integer,Question>();
-    	}
-    	
-		public void saveInstance(String filepath) {
-    		FileOutputStream fos;
-    		try {
-    			fos = new FileOutputStream(filepath);
-    			ObjectOutputStream oos = new ObjectOutputStream(fos);
-    			oos.writeObject(this);
-    			oos.close();
-    		} catch (IOException  e) {
-    			e.printStackTrace();
-    		}
-    	}
-    }
 }
