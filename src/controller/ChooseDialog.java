@@ -62,10 +62,9 @@ public class ChooseDialog implements Runnable{
             dialogStage.setTitle("Question in class");
             dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             dialogStage.initOwner(mainApp.getPrimaryStage());
-            Scene scene = new Scene(page);
-            page.setPadding(new javafx.geometry.Insets(0, 0, 0, 0));
-            scene.setFill(null);
-            
+            dialogStage.setX(mainApp.getPrimaryStage().getX()+mainApp.getPrimaryStage().getWidth());
+            dialogStage.setY(mainApp.getPrimaryStage().getY());
+            Scene scene = new Scene(page);            
             dialogStage.setScene(scene);
 	        dialogStage.showAndWait();
 	        if(countDownLatch != null)//If the main stage must wait to continue
