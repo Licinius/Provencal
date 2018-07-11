@@ -72,6 +72,7 @@ public class MainApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             primaryStage.show();
+            primaryStage.setOnHidden(e -> System.exit(0));
             listOverviewController = loader.getController();
             listOverviewController.setMainApp(this);
             

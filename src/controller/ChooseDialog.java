@@ -59,13 +59,7 @@ public class ChooseDialog implements Runnable{
             controller.initDialog(mainApp,question);
             // Create the dialog Stage.
             dialogStage = new Stage();
-            dialogStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-				
-				@Override
-				public void handle(WindowEvent arg0) {
-					arg0.consume();
-				}
-			});
+            dialogStage.setOnCloseRequest(e -> e.consume());
             dialogStage.setResizable(false);
             dialogStage.setTitle("Question in class");
             dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
