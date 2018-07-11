@@ -180,7 +180,9 @@ public class MainApp extends Application {
     
     public String showStartAlert() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
-    	alert.setTitle("Startup option");
+    	((Stage)alert.getDialogPane().getScene().getWindow())
+    		.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
+        alert.setTitle("Startup option");
     	alert.setHeaderText("Choose your startup option");
     	alert.setContentText("The load button allows you to load a previous save file.");
 
