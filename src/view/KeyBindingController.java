@@ -64,7 +64,7 @@ public class KeyBindingController {
 			if(keyBindingField.getCode() != null) {
 				keyMapping.put(
 						keyBindingField.getCode(),
-						new Class(classNameFields.get(index).getText(),null)
+						new Class(classNameFields.get(index).getText())
 						);
 				keyCodeCount++;
 			}

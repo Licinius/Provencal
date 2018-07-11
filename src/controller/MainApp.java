@@ -1,6 +1,8 @@
 package controller;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Optional;
@@ -129,7 +131,17 @@ public class MainApp extends Application {
     			new LoadingScreen(this, countDownLatch)
 		);
     	String filepathQuestions = "src/resources/questions/questions.ser";
-    	instance.questions = questionFactory.getAllSerializedQuestions(filepathQuestions);
+//    	instance.questions = questionFactory.getAllSerializedQuestions(filepathQuestions);
+    	instance.questions = questionFactory.getAllSqlQuestions();
+    	FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(filepathQuestions);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(instance.questions);
+			oos.close();
+		} catch (IOException  e) {
+			e.printStackTrace();
+		}
     	countDownLatch.countDown();
     	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(

@@ -10,7 +10,7 @@ public class Question extends Post implements Serializable {
 	private int favoriteCount;
 	private int viewCount;
 	private String[] tags;
-	
+	private Classes classes;
 	private HashMap<Integer,Answer> mapAnswer;
 	private Answer selectedAnswer;
 	
@@ -24,6 +24,7 @@ public class Question extends Post implements Serializable {
 		this.favoriteCount = favoriteCount;
 		this.viewCount = viewCount;
 		this.tags = tags;
+		this.classes = new Classes();
 		this.mapAnswer = new HashMap<Integer, Answer>();
 	}
 	public Question() {

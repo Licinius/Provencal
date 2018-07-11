@@ -25,6 +25,12 @@ public class Class implements Serializable {
 		this.questions = new ArrayList<Question>();
 		this.sizeQuestions = 0;
 	}
+	public Class(String name) {
+		this.name = name;
+		this.keywords = new ArrayList<>();
+		this.questions = new ArrayList<Question>();
+		this.sizeQuestions = 0;
+	}
 	public Class() {}
 	
 	public void addQuestion(Question question) {
