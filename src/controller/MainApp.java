@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 
 import factory.QuestionFactory;
@@ -98,7 +99,10 @@ public class MainApp extends Application {
 		}
     	int iteration = 0;
     	int total = instance.remainingQuestions.size();
-    	for(Question question : instance.remainingQuestions.values()) {
+    	Iterator<Question> iteratorQuestions = instance.remainingQuestions.values().iterator();
+    	Question question;
+    	while(iteratorQuestions.hasNext()) {
+    		question = iteratorQuestions.next();
     		countDownLatch = new CountDownLatch(1);
         	Platform.runLater(
         			new ChooseDialog(this,question).withCountDownLatch(countDownLatch)
@@ -108,9 +112,9 @@ public class MainApp extends Application {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-        	instance.remainingQuestions.remove(question.getId());
         	classData.setAll(instance.keyMapping.values());
         	iteration++;
+        	iteratorQuestions.remove(); //Also remove in the HashMap
         	progress.set((double)iteration/total);//How to set the progress
     	}
     }
