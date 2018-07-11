@@ -1,5 +1,7 @@
 package view;
 
+import java.io.File;
+
 import controller.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
@@ -7,6 +9,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import model.Class;
 /**
  * Class manage the ListOverView
@@ -46,6 +49,26 @@ public class ListOverviewController {
 	 */
 	@FXML
 	private void saveApplication() {
-		mainApp.saveInstance("instance.ser");
+		FileChooser fileChooser = new FileChooser();
+		File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+		if(file != null)
+			mainApp.saveInstance(file.getAbsolutePath());
+	}
+	
+	/**
+	 * Allow to save and close the application
+	 */
+	@FXML
+	private void saveAndCloseApplication() {
+		saveApplication();
+		closeApplication();
+	}
+	
+	/**
+	 * Allow to close the application, the same way when the user clicks on the exit button
+	 */
+	@FXML
+	private void closeApplication() {
+		mainApp.close();
 	}
 }

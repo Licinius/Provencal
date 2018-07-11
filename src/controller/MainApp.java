@@ -174,10 +174,19 @@ public class MainApp extends Application {
     	 instance.keyMapping = keyMapping;
     }
     
+    /**
+     * Save the instance
+     * @param filepath
+     */
     public void saveInstance(String filepath) {
     	instance.saveInstance(filepath);
+    }    
+    /**
+     * Close the application
+     */
+    public void close() {
+    	System.exit(0);
     }
-    
     public String showStartAlert() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	((Stage)alert.getDialogPane().getScene().getWindow())
@@ -194,12 +203,11 @@ public class MainApp extends Application {
     	instance = new Instance();
     	if (result.get() == loadButton){
     		FileChooser fileChooser = new FileChooser();
-    		fileChooser.setTitle("Open Resource File");
-    		File file = fileChooser.showOpenDialog(new Stage());
-    		return file.getAbsolutePath();
-    	}else {
-    		return "";
+    		File file = fileChooser.showOpenDialog(primaryStage);
+    		if(file != null)
+    			return file.getAbsolutePath();
     	}
+    	return "";
     }
     /**
      * Launch the application
