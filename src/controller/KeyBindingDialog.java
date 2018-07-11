@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -11,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Class;
 import view.KeyBindingController;
 public class KeyBindingDialog implements Runnable{
@@ -43,6 +45,13 @@ public class KeyBindingDialog implements Runnable{
 	            controller.setMainApp(this.mainApp);
 	            // Create the dialog Stage.
 	            dialogStage = new Stage();
+	            dialogStage.setResizable(false);
+	            dialogStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+					@Override
+					public void handle(WindowEvent arg0) {
+						arg0.consume();
+					}
+				});
 	            dialogStage.setTitle("Bind keys for classes");
 	            dialogStage.initOwner(mainApp.getPrimaryStage());
 	            dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));

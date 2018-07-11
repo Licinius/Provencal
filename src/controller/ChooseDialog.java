@@ -3,11 +3,13 @@ package controller;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Question;
 import view.ChooseClassDialogController;
 /**
@@ -57,11 +59,21 @@ public class ChooseDialog implements Runnable{
             controller.initDialog(mainApp,question);
             // Create the dialog Stage.
             dialogStage = new Stage();
+            dialogStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				
+				@Override
+				public void handle(WindowEvent arg0) {
+					arg0.consume();
+				}
+			});
             dialogStage.setResizable(false);
             dialogStage.setTitle("Question in class");
             dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             dialogStage.initOwner(mainApp.getPrimaryStage());
             Scene scene = new Scene(page);
+            page.setPadding(new javafx.geometry.Insets(0, 0, 0, 0));
+            scene.setFill(null);
+            
             dialogStage.setScene(scene);
 	        dialogStage.showAndWait();
 	        if(countDownLatch != null)//If the main stage must wait to continue

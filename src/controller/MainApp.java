@@ -45,12 +45,12 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Provençal le Gaulois");
-        showStartAlert();
         initRootLayout();
+        String filepath = showStartAlert();
         Task<Void> classifyTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                classifyQuestions();
+                classifyQuestions(filepath);
                 return null;
             }
         };
@@ -82,32 +82,19 @@ public class MainApp extends Application {
     /**
      * Classify the questions and update the progress or open a dialog if needed
      */
-    public void classifyQuestions() {
+    public void classifyQuestions(String filepath) {
     	CountDownLatch countDownLatch;
     	int iteration;
-    	if(instance.remainingQuestions.isEmpty()) {
-        	QuestionFactory questionFactory = new QuestionFactory();
-        	countDownLatch = new CountDownLatch(1);
-        	Platform.runLater(
-        			new LoadingScreen(this, countDownLatch)
-    		);
-        	String filepath = "src/resources/questions/questions.ser";
-        	instance.setRemainingQuestions(questionFactory.getAllSerializedQuestions(filepath));
-        	countDownLatch.countDown();
-        	countDownLatch  = new CountDownLatch(1);
-        	Platform.runLater(
-        			new KeyBindingDialog(this).withCountdown(countDownLatch)
-        	);
-        	try {
-    			countDownLatch.await();
-    		} catch (InterruptedException e) {
-    			e.printStackTrace();
-    		}
+    	if(filepath.isEmpty()) {
+    		createNewInstance();
         	iteration = 0;
     	}else {
+    		loadPreviousInstance(filepath);
     		iteration = instance.getInitialQuestionsCount() - instance.remainingQuestions.size();
+    		classData.setAll(instance.keyMapping.values());
     	}
     	int total = instance.getInitialQuestionsCount();
+   		progress.set((double)iteration/total);//How to set the progress
     	Iterator<Question> iteratorQuestions = instance.remainingQuestions.values().iterator();
     	Question question;
     	while(iteratorQuestions.hasNext()) {
@@ -127,7 +114,36 @@ public class MainApp extends Application {
         	progress.set((double)iteration/total);//How to set the progress
     	}
     }
-    /**
+    private void loadPreviousInstance(String filepath) {
+    	CountDownLatch countDownLatch = new CountDownLatch(1);
+    	Platform.runLater(
+    			new LoadingScreen(this, countDownLatch)
+		);
+    	instance = instance.loadInstance(filepath);
+    	countDownLatch.countDown();
+	}
+
+	private void createNewInstance() {
+      	QuestionFactory questionFactory = new QuestionFactory();
+    	CountDownLatch countDownLatch = new CountDownLatch(1);
+    	Platform.runLater(
+    			new LoadingScreen(this, countDownLatch)
+		);
+    	String filepathQuestions = "src/resources/questions/questions.ser";
+    	instance.setRemainingQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
+    	countDownLatch.countDown();
+    	countDownLatch  = new CountDownLatch(1);
+    	Platform.runLater(
+    			new KeyBindingDialog(this).withCountdown(countDownLatch)
+    	);
+    	try {
+			countDownLatch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
      * Returns the main stage.
      * @return
      */
@@ -161,7 +177,7 @@ public class MainApp extends Application {
     	instance.saveInstance(filepath);
     }
     
-    public void showStartAlert() {
+    public String showStartAlert() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	alert.setTitle("Startup option");
     	alert.setHeaderText("Choose your startup option");
@@ -177,7 +193,9 @@ public class MainApp extends Application {
     		FileChooser fileChooser = new FileChooser();
     		fileChooser.setTitle("Open Resource File");
     		File file = fileChooser.showOpenDialog(new Stage());
-    		instance = instance.loadInstance(file.getAbsolutePath());
+    		return file.getAbsolutePath();
+    	}else {
+    		return "";
     	}
     }
     /**
