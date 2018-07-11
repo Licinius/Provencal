@@ -143,9 +143,11 @@ public class KeyBindingController {
 			}
 			@Override
 			public void handle(KeyEvent arg0) {
-				keyBindingField.clear();
-				keyBindingField.setText(arg0.getCode().toString());
-				keyBindingField.setCode(arg0.getCode());
+				if(arg0.getCode().isLetterKey()) {
+					keyBindingField.clear();
+					keyBindingField.setText(arg0.getCode().toString());
+					keyBindingField.setCode(arg0.getCode());
+				}
 			}
 		}
 	}
