@@ -30,12 +30,8 @@ public class KeyBindingDialog implements Runnable{
 	}
 	@Override
 	public void run() {
+		System.out.println("whay");
 		showKeyBindingDialog();
-		dialogStage.setOnCloseRequest(e -> e.consume());
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        while(!controller.isValidated()) {
-            dialogStage.showAndWait();
-        }
         if(countDown != null) 
         	countDown.countDown();    
 	}
@@ -53,11 +49,15 @@ public class KeyBindingDialog implements Runnable{
 	        dialogStage.setResizable(false);
 	        dialogStage.setTitle("Bind keys for classes");
 	        dialogStage.initOwner(mainApp.getPrimaryStage());
+			dialogStage.setOnCloseRequest(e -> e.consume());
+	        dialogStage.initModality(Modality.WINDOW_MODAL);
 	        dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
 	        Scene scene = new Scene(page);
 	        dialogStage.setScene(scene);
 	        dialogStage.sizeToScene();
-            dialogStage.showAndWait();
+	        do {
+	        	dialogStage.showAndWait();
+	        }while(!controller.isValidated());
 		 } catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
