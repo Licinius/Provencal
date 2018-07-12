@@ -132,8 +132,8 @@ public class MainApp extends Application {
 	/**
 	 * Update the progressBar and the grid of classes
 	 */
-	public void updateProgress() {
-		classifiedQuestionsCount++;
+	public void updateProgress(int raise) {
+		classifiedQuestionsCount+=raise;
 		this.progress.set((double)classifiedQuestionsCount/instance.getQuestionsCount());
 		classData.setAll(instance.keyMapping.values());
 	}

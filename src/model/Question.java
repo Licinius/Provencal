@@ -81,6 +81,10 @@ public class Question extends Post implements Serializable {
 		this.selectedAnswer = selectedAnswer;
 	}
 	
+	public Classes getClasses() {
+		return this.classes;
+	}
+	
 	//FUNCTION
 	public void addAnswer (Answer a) {
 		try {

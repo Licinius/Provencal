@@ -3,8 +3,8 @@ package view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import model.Class;
 import model.Question;
-
 /**
  * Controller for an anchor pane that display a question
  * @author Dell'omo
@@ -14,6 +14,8 @@ public class QuestionViewController{
 	private Label title;
 	@FXML
 	private Label body;
+	@FXML
+	private Label classes;
 	@FXML
 	private GridPane gridPane;
 	private Question question;
@@ -30,6 +32,11 @@ public class QuestionViewController{
 		if(question.isClassified()) {
 			this.title.setStyle(this.title.getStyle()+"-fx-text-fill: #64DD17;");
 		}
+		String classesName = "";
+		for(Class aClass : question.getClasses()) {
+			classesName+=aClass.getName() + ", ";
+		}
+		this.classes.setText(classesName);
 	}
 	
 	

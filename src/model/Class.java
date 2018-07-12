@@ -37,6 +37,10 @@ public class Class implements Serializable {
 		questions.add(question);
 		sizeQuestions = questions.size();
 	}
+	public void removeQuestion(Question question) {
+		questions.remove(question);
+		sizeQuestions = questions.size();
+	}
 
 	
 	public int getSizeQuestions() {

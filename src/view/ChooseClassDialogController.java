@@ -3,6 +3,7 @@ package view;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import controller.MainApp;
 import javafx.event.EventHandler;
@@ -70,7 +71,6 @@ public class ChooseClassDialogController {
 	public void initDialog(MainApp mainApp, ArrayList<Question> questions) throws IOException {
 		this.mainApp = mainApp;
 		this.questions = questions;
-		index=questions.size()-2;
 		currentQuestion = nextUnclassifiedQuestion();
 		updateView();
 	}
@@ -82,16 +82,16 @@ public class ChooseClassDialogController {
 	public Question nextUnclassifiedQuestion() {
 		Question question;
 		while(index<questions.size()-1) {
-			index++;
     		question = questions.get(index);
     		if(!question.isClassified())
     			return question;
+			index++;
     	}
 		return currentQuestion;
 	}
 	
 	/**
-	 * Return the previous unclassifed question
+	 * Return the previous unclassified question
 	 * @return a question if the index is not out of bound
 	 */
 	public Question previousUnclassifiedQuestion() {
@@ -120,10 +120,12 @@ public class ChooseClassDialogController {
 		return ((index<=questions.size() && index>0)?questions.get(--index):currentQuestion);
 	}
 	public void updateView() {
+		potentialClasses.clear();
 		gridPane.getChildren().remove(questionPane);
 		if(currentQuestion == null) {
 			((Stage)gridPane.getScene().getWindow()).close();
 		}else {
+			potentialClasses.addAll(currentQuestion.getClasses());
 			try {
 				questionPane = getQuestionPane(currentQuestion);
 			} catch (IOException e) {
@@ -165,24 +167,36 @@ public class ChooseClassDialogController {
 					currentQuestion = previousQuestion();
 					updateView();
 					break;
-				case ENTER:
-					for(Class choosenClass : potentialClasses) {
-						choosenClass.addQuestion(currentQuestion);
-						currentQuestion.addClass(choosenClass);
-					}
-					mainApp.updateProgress();
-					Question questionToDisplay = nextUnclassifiedQuestion();
-					if(!potentialClasses.isEmpty()) {
-						if(questionToDisplay==currentQuestion) {
-							questionToDisplay = previousUnclassifiedQuestion();
-							if(questionToDisplay == currentQuestion) {
-								System.out.println("Fini");
-							}
-						}
-						currentQuestion=questionToDisplay;
-						potentialClasses.clear();
+				case DELETE : 
+					Iterator<Class> iteratorClasses = currentQuestion.getClasses().iterator();
+					while(iteratorClasses.hasNext()) {
+						Class classToRemove = iteratorClasses.next();
+						classToRemove.removeQuestion(currentQuestion);
+						iteratorClasses.remove();
 					}
 					updateView();
+					mainApp.updateProgress(-1);
+					break;
+				case ENTER:
+					if(!currentQuestion.isClassified()) {
+						for(Class choosenClass : potentialClasses) {
+							choosenClass.addQuestion(currentQuestion);
+							currentQuestion.addClass(choosenClass);
+						}
+						Question questionToDisplay = nextUnclassifiedQuestion();
+						if(!potentialClasses.isEmpty()) {
+							mainApp.updateProgress(1);
+							if(questionToDisplay==currentQuestion) {
+								questionToDisplay = previousUnclassifiedQuestion();
+								if(questionToDisplay == currentQuestion) {
+									System.out.println("Fini");
+								}
+							}
+							currentQuestion=questionToDisplay;
+						}
+						updateView();
+					}
+					
 					break;
 				default:
 					break;
