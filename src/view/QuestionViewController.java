@@ -27,6 +27,9 @@ public class QuestionViewController{
 		this.question = question;
 		this.title.setText(question.getTitle());
 		this.body.setText(question.getBody());
+		if(question.isClassified()) {
+			this.title.setStyle(this.title.getStyle()+"-fx-text-fill: #64DD17;");
+		}
 	}
 	
 	

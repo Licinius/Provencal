@@ -18,14 +18,23 @@ public class Instance implements Serializable{
 		 */
 		private static final long serialVersionUID = 5428177751212085034L;
 		public HashMap<KeyCode,Class> keyMapping;
-    	public HashMap<Integer,Question> questions;
-    	private int indexQuestions;
+    	private HashMap<Integer,Question> questions;
+    	private int questionsCount;
     	public Instance() {
     		keyMapping = new HashMap<KeyCode,Class>();
     		questions = new HashMap<Integer,Question>();
-    		indexQuestions = 0;
+    		questionsCount = 0;
     	}
-    	
+    	public void setQuestions(HashMap<Integer,Question> questions) {
+    		this.questions = questions;
+    		this.questionsCount = questions.size();
+    	}
+    	public int getQuestionsCount() {
+    		return this.questionsCount;
+    	}
+    	public HashMap<Integer,Question> getQuestions() {
+    		return this.questions;
+    	}
 		public void saveInstance(String filepath) {
     		FileOutputStream fileOutputStream;
     		try {

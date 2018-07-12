@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import javafx.fxml.FXMLLoader;
@@ -19,17 +20,19 @@ public class ChooseDialog implements Runnable{
 	private CountDownLatch countDownLatch;
 	private AnchorPane page;
 	private Stage dialogStage;
-	private Question question;
 	
+	
+	private ArrayList<Question> questions;
+	   
 	/**
 	 * Constructor of the Runnable
 	 * @param mainApp The controller mainApp
-	 * @param question The question to put in the class
+	 * @param questions All the question to classified
 	 */
-	public ChooseDialog(MainApp mainApp,Question question)
+	public ChooseDialog(MainApp mainApp,ArrayList<Question> questions)
 	{
 		this.mainApp = mainApp;
-		this.question = question;
+		this.questions = questions;
 	}
 	
 	/**
@@ -54,7 +57,7 @@ public class ChooseDialog implements Runnable{
             loader.setLocation(ChooseDialog.class.getResource("/view/ChooseClassDialog.fxml"));
             page = (AnchorPane) loader.load();
             ChooseClassDialogController controller = loader.getController();
-            controller.initDialog(mainApp,question);
+            controller.initDialog(mainApp,questions);
             // Create the dialog Stage.
             dialogStage = new Stage();
             dialogStage.setOnCloseRequest(e -> e.consume());
@@ -67,11 +70,12 @@ public class ChooseDialog implements Runnable{
             Scene scene = new Scene(page);            
             dialogStage.setScene(scene);
 	        dialogStage.showAndWait();
-	        if(countDownLatch != null)//If the main stage must wait to continue
+			if(countDownLatch != null)//If the main stage must wait to continue
             	countDownLatch.countDown();
         } catch (IOException e) {
             e.printStackTrace();
         }
 	}
+	
 
 }

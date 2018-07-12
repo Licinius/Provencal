@@ -1,6 +1,8 @@
 package view;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import controller.MainApp;
 import javafx.event.EventHandler;
@@ -10,6 +12,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.Class;
 import model.Question;
 /**
  * Controller for the view ChooseClassDialog
@@ -20,15 +23,26 @@ public class ChooseClassDialogController {
 	@FXML
 	private GridPane gridPane;
 	
+	private AnchorPane questionPane;
+	
 	private MainApp mainApp;
-	private Question question;
+	private Question currentQuestion;
+	private ArrayList<Question> questions;
+	
+	private HashSet<Class> potentialClasses;
+	private int index;
+	
 	/**
-	 * Init the panesControllers to an empty HashMap and
-	 * The "removed" attributed to false
+	 * Init :
+	 *  - the handler of key pressed
+	 *  - The potential classes to an empty HashSet
+	 *  - The index to zero
+	 * 
 	 */
 	public void initialize() {
 		gridPane.setOnKeyPressed(new KeyPressed());
-		//gridPane.setOnKeyReleased(new KeyReleased());
+		potentialClasses = new HashSet<>();
+		index = 0;
 	}
 	
 	/**
@@ -50,18 +64,77 @@ public class ChooseClassDialogController {
 	/**
 	 * This function initialized the dialog with the question in the class
 	 * @param mainApp
-	 * @param question
+	 * @param questions
 	 * @throws IOException
 	 */
-	public void initDialog(MainApp mainApp, Question question) throws IOException {
+	public void initDialog(MainApp mainApp, ArrayList<Question> questions) throws IOException {
 		this.mainApp = mainApp;
-		this.question = question;
-        AnchorPane questionPane = getQuestionPane(question);
-        gridPane.add(questionPane, 0, 0);
+		this.questions = questions;
+		index=questions.size()-2;
+		currentQuestion = nextUnclassifiedQuestion();
+		updateView();
+	}
+	
+	/**
+	 * Return the next unclassified question
+	 * @return a question if the index is not out of bound
+	 */
+	public Question nextUnclassifiedQuestion() {
+		Question question;
+		while(index<questions.size()-1) {
+			index++;
+    		question = questions.get(index);
+    		if(!question.isClassified())
+    			return question;
+    	}
+		return currentQuestion;
+	}
+	
+	/**
+	 * Return the previous unclassifed question
+	 * @return a question if the index is not out of bound
+	 */
+	public Question previousUnclassifiedQuestion() {
+		Question question;
+		while(index<=questions.size() && index>0) {
+			index--;
+    		question = questions.get(index);
+    		if(!question.isClassified())
+    			return question;
+    	}
+		return currentQuestion;
+	}
+	/**
+	 * Return the next question
+	 * @return a question if the index is not out of bound
+	*/
+	public Question nextQuestion() {
+		return (index<questions.size()-1?questions.get(++index):currentQuestion);
+	}
+	
+	/**
+	 * Return the previous question
+	 * @return a question if the index is not out of bound
+	 */
+	public Question previousQuestion() {
+		return ((index<=questions.size() && index>0)?questions.get(--index):currentQuestion);
+	}
+	public void updateView() {
+		gridPane.getChildren().remove(questionPane);
+		if(currentQuestion == null) {
+			((Stage)gridPane.getScene().getWindow()).close();
+		}else {
+			try {
+				questionPane = getQuestionPane(currentQuestion);
+			} catch (IOException e) {
+				((Stage)gridPane.getScene().getWindow()).close();
+			}
+			gridPane.add(questionPane, 0, 0);
+		}
 	}
 	/**
 	 * Event handler to read each keyPressed
-	 * @author Lenovo
+	 * @author Dell'omo
 	 *
 	 */
 	private class KeyPressed implements EventHandler<KeyEvent>{
@@ -69,28 +142,53 @@ public class ChooseClassDialogController {
 		@Override
 		public void handle(KeyEvent arg0) {
 			if(mainApp.getKeyMapping().containsKey(arg0.getCode())) {
-				mainApp.getKeyMapping().get(arg0.getCode()).addQuestion(question);
-				((Stage)gridPane.getScene().getWindow()).close();
+				Class choosenClass = mainApp.getKeyMapping().get(arg0.getCode());
+				if(potentialClasses.contains(choosenClass)) {
+					potentialClasses.remove(choosenClass);
+				}else {
+					potentialClasses.add(choosenClass);
+				}
 			}
 			switch(arg0.getCode()) {
 				case UP:
 					System.out.println("Premiere question");
 					break;
 				case DOWN:
-					System.out.println("Dernière question");
 					break;
 				case RIGHT:
-					System.out.println("Pass");
+					potentialClasses.clear();
+					currentQuestion = nextQuestion();
+					updateView();
 					break;
 				case LEFT:
-					System.out.println("Right");
+					potentialClasses.clear();
+					currentQuestion = previousQuestion();
+					updateView();
 					break;
 				case ENTER:
-					System.out.println("valider");
+					for(Class choosenClass : potentialClasses) {
+						choosenClass.addQuestion(currentQuestion);
+						currentQuestion.addClass(choosenClass);
+					}
+					mainApp.updateProgress();
+					Question questionToDisplay = nextUnclassifiedQuestion();
+					if(!potentialClasses.isEmpty()) {
+						if(questionToDisplay==currentQuestion) {
+							questionToDisplay = previousUnclassifiedQuestion();
+							if(questionToDisplay == currentQuestion) {
+								System.out.println("Fini");
+							}
+						}
+						currentQuestion=questionToDisplay;
+						potentialClasses.clear();
+					}
+					updateView();
+					break;
 				default:
 					break;
 			}
 		}
 	}
+	
 
 }

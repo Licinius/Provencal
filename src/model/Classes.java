@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 /**
  * This class is used to get statistic of a set of Class
@@ -19,10 +19,10 @@ public class Classes implements Serializable,Collection<Class>{
 	 * The generated serialUID
 	 */
 	private static final long serialVersionUID = 1276237082847124105L;
-	ArrayList<Class> classes;
+	HashSet<Class> classes;
 	
 	public Classes() {
-		classes = new ArrayList<Class>();
+		classes = new HashSet<Class>();
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class Classes implements Serializable,Collection<Class>{
 	 * Constructor to initialize the classes with a already create ArrayList of classes
 	 * @param classes, a ArrayList of Class
 	 */
-	public Classes(ArrayList<Class> classes) {
+	public Classes(HashSet<Class> classes) {
 		this.classes = classes;
 	}
 	
@@ -70,7 +70,7 @@ public class Classes implements Serializable,Collection<Class>{
 	 * Fired to get the arrayList of classes
 	 * @return The current ArrayList of classes
 	 */
-	public ArrayList<Class> getClasses() {
+	public HashSet<Class> getClasses() {
 		return classes;
 	}
 	/**

@@ -89,7 +89,31 @@ public class Question extends Post implements Serializable {
 			System.err.println("Post "+a.getId()+" | "+ a.toString());
 		}
 	}
+	/**
+	 * If the question has no classes then it's not classified
+	 * @return True if the classes is not empty
+	 */
+	public boolean isClassified() {
+		return !classes.isEmpty();
+	}
+	/**
+	 * Add a class to the classes
+	 * @param aClass
+	 */
+	public boolean addClass(Class aClass) {
+		return classes.add(aClass);
+	}
+	/**
+	 * Remove a class to the classes
+	 * @param aClass
+	 */
+	public boolean removeClass(Class aClass) {
+		return classes.remove(aClass);
+	}
 	
+	public void clearClasses() {
+		classes.clear();
+	}
 	public int getAnswerCount() {
 		return this.mapAnswer.size();
 	}

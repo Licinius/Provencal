@@ -1,10 +1,8 @@
 package controller;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
@@ -43,6 +41,7 @@ public class MainApp extends Application {
     private ObservableList<Class> classData = FXCollections.observableArrayList();
     private DoubleProperty progress = new SimpleDoubleProperty(0.0);
     private Instance instance;
+    private int classifiedQuestionsCount = 0;
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -86,34 +85,21 @@ public class MainApp extends Application {
      * Classify the questions and update the progress or open a dialog if needed
      */
     public void classifyQuestions(String filepath) {
-    	CountDownLatch countDownLatch;
-    	int iteration=0;
     	if(filepath.isEmpty()) {
     		createNewInstance();
-        	iteration = 0;
     	}else {
     		loadPreviousInstance(filepath);
     		classData.setAll(instance.keyMapping.values());
     	}
-    	int total = instance.questions.size();
-   		progress.set((double)iteration/total);//How to set the progress
-    	Iterator<Question> iteratorQuestions = instance.questions.values().iterator();
-    	Question question;
-    	while(iteratorQuestions.hasNext()) {
-    		question = iteratorQuestions.next();
-    		countDownLatch = new CountDownLatch(1);
-        	Platform.runLater(
-        			new ChooseDialog(this,question).withCountDownLatch(countDownLatch)
-        	);
-        	try {
-				countDownLatch.await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        	classData.setAll(instance.keyMapping.values());
-        	iteration++;
-        	progress.set((double)iteration/total);//How to set the progress
+    	for(Question question : instance.getQuestions().values()) {
+    		if(question.isClassified()) {
+    			classifiedQuestionsCount++;
+    		}
     	}
+    	int total = instance.getQuestionsCount();
+   		progress.set((double)classifiedQuestionsCount/total);//How to set the progress
+   		ArrayList<Question> questions = new ArrayList<Question>(instance.getQuestions().values());
+   		Platform.runLater(new ChooseDialog(this,questions));
     }
     private void loadPreviousInstance(String filepath) {
     	CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -131,17 +117,7 @@ public class MainApp extends Application {
     			new LoadingScreen(this, countDownLatch)
 		);
     	String filepathQuestions = "src/resources/questions/questions.ser";
-//    	instance.questions = questionFactory.getAllSerializedQuestions(filepathQuestions);
-    	instance.questions = questionFactory.getAllSqlQuestions();
-    	FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(filepathQuestions);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(instance.questions);
-			oos.close();
-		} catch (IOException  e) {
-			e.printStackTrace();
-		}
+    	instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
     	countDownLatch.countDown();
     	countDownLatch  = new CountDownLatch(1);
     	Platform.runLater(
@@ -153,7 +129,14 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Update the progressBar and the grid of classes
+	 */
+	public void updateProgress() {
+		classifiedQuestionsCount++;
+		this.progress.set((double)classifiedQuestionsCount/instance.getQuestionsCount());
+		classData.setAll(instance.keyMapping.values());
+	}
 	/**
      * Returns the main stage.
      * @return
