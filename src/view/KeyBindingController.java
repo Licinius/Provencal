@@ -72,7 +72,7 @@ public class KeyBindingController {
 			}
 			index+=1;
 		}
-		validated = keyCodeCount>0;
+		validated = (!validated? keyCodeCount>0 :true);
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
 	
@@ -99,6 +99,7 @@ public class KeyBindingController {
 	
 	private void recreateRows() {
 		for(KeyCode keycode : mainApp.getKeyMapping().keySet()) {
+			validated = true;
 			Class aClass = mainApp.getKeyMapping().get(keycode);
 			TextField classNameField = new TextField(aClass.getName());
 			classNameField.setDisable(true);
