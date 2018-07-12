@@ -177,6 +177,14 @@ public class ChooseClassDialogController {
 					updateView();
 					mainApp.updateProgress(-1);
 					break;
+				case PAGE_UP:
+					currentQuestion = nextUnclassifiedQuestion();
+					updateView();
+					break;
+				case PAGE_DOWN:
+					currentQuestion = previousUnclassifiedQuestion();
+					updateView();
+					break;
 				case ENTER:
 					if(!currentQuestion.isClassified()) {
 						for(Class choosenClass : potentialClasses) {
