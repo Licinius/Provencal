@@ -153,9 +153,14 @@ public class ChooseClassDialogController {
 			}
 			switch(arg0.getCode()) {
 				case UP:
-					System.out.println("Premiere question");
+					index=questions.size()-1;
+					currentQuestion = questions.get(index);
+					updateView();
 					break;
 				case DOWN:
+					index=0;
+					currentQuestion = questions.get(index);
+					updateView();
 					break;
 				case RIGHT:
 					potentialClasses.clear();
