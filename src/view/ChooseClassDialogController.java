@@ -209,7 +209,6 @@ public class ChooseClassDialogController {
 						}
 						updateView();
 					}
-					
 					break;
 				default:
 					break;

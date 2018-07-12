@@ -29,34 +29,37 @@ public class KeyBindingDialog implements Runnable{
 	}
 	@Override
 	public void run() {
+		showKeyBindingDialog();
+		dialogStage.setOnCloseRequest(e -> e.consume());
+        if(countDown != null) 
+        	countDown.countDown();    
+	}
+
+	public void showKeyBindingDialog() {
+		// Load the fxml file and create a new stage for the popup dialog.
 		 try {
-	            // Load the fxml file and create a new stage for the popup dialog.
-	            FXMLLoader loader = new FXMLLoader();
-	            loader.setLocation(ChooseDialog.class.getResource("/view/keyBindingView.fxml"));
-	            page = loader.load();
-	            KeyBindingController controller = loader.getController();
-	            controller.setMainApp(this.mainApp);
-	            // Create the dialog Stage.
-	            dialogStage = new Stage();
-	            dialogStage.setResizable(false);
-	            dialogStage.setOnCloseRequest(e -> e.consume());
-	            dialogStage.setTitle("Bind keys for classes");
-	            dialogStage.initOwner(mainApp.getPrimaryStage());
-	            dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
-	            dialogStage.initModality(Modality.WINDOW_MODAL);
-	            Scene scene = new Scene(page);
-	            dialogStage.setScene(scene);
-	            dialogStage.sizeToScene();
-	            while(!controller.isValidated()) {
-		            dialogStage.showAndWait();
-	            }
-	            if(countDown != null) {
-	            	countDown.countDown();
-	            }
-	        } catch (IOException e) {
-	            e.printStackTrace();
+			FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(ChooseDialog.class.getResource("/view/keyBindingView.fxml"));
+			page = loader.load();
+	        KeyBindingController controller = loader.getController();
+	        controller.setMainApp(this.mainApp);
+	        // Create the dialog Stage.
+	        dialogStage = new Stage();
+	        dialogStage.setResizable(false);
+	        dialogStage.setTitle("Bind keys for classes");
+	        dialogStage.initOwner(mainApp.getPrimaryStage());
+	        dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
+	        dialogStage.initModality(Modality.WINDOW_MODAL);
+	        Scene scene = new Scene(page);
+	        dialogStage.setScene(scene);
+	        dialogStage.sizeToScene();
+	        while(!controller.isValidated()) {
+	            dialogStage.showAndWait();
 	        }
-		
+		 } catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	}
 
 }

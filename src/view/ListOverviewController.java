@@ -2,6 +2,7 @@ package view;
 
 import java.io.File;
 
+import controller.KeyBindingDialog;
 import controller.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
@@ -70,5 +71,13 @@ public class ListOverviewController {
 	@FXML
 	private void closeApplication() {
 		mainApp.close();
+	}
+	
+	/**
+	 * Allow to create a new class
+	 */
+	@FXML
+	private void addClass() {
+		new KeyBindingDialog(mainApp).showKeyBindingDialog();
 	}
 }

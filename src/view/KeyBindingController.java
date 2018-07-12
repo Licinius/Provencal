@@ -34,12 +34,12 @@ public class KeyBindingController {
 		keyBindingFields = new ArrayList<KeyBindingField>();
 		row = 1;
 		validated = false;
-		createRow();
-		
 	}
 	
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
+		recreateRows();
+		createRow();
 	}
 	/**
 	 * Fired when the user click on the button addClass 
@@ -58,20 +58,21 @@ public class KeyBindingController {
 	private void handleValidate() {
 		int index = 0;
 		int keyCodeCount = 0;
-
-		HashMap<KeyCode,Class> keyMapping = new HashMap<>();
+		//The mapping will be update if not empty
+		HashMap<KeyCode,Class> keyMapping = mainApp.getKeyMapping();
 		for(KeyBindingField keyBindingField : keyBindingFields) {
 			if(keyBindingField.getCode() != null) {
-				keyMapping.put(
-						keyBindingField.getCode(),
-						new Class(classNameFields.get(index).getText())
-						);
-				keyCodeCount++;
+				if(!keyMapping.containsKey(keyBindingField.getCode())){
+					keyMapping.put(
+							keyBindingField.getCode(),
+							new Class(classNameFields.get(index).getText())
+							);
+					keyCodeCount++;
+				}
 			}
 			index+=1;
 		}
 		validated = keyCodeCount>0;
-		mainApp.setKeyMapping(keyMapping);
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
 	
@@ -96,6 +97,19 @@ public class KeyBindingController {
 		row++;
 	}
 	
+	private void recreateRows() {
+		for(KeyCode keycode : mainApp.getKeyMapping().keySet()) {
+			Class aClass = mainApp.getKeyMapping().get(keycode);
+			TextField classNameField = new TextField(aClass.getName());
+			classNameField.setDisable(true);
+			KeyBindingField keyBindingField = new KeyBindingField(keycode);
+			keyBindingField.setDisable(true);
+			gridPane.add(classNameField, 0, row);
+			gridPane.add(keyBindingField, 1,row);
+			row++;
+		}
+	}
+	
 	/**
 	 * Specialized TextField for KeyBinding in the app
 	 * @author Dell'omo
@@ -109,6 +123,10 @@ public class KeyBindingController {
 			this.setOnMouseClicked(new MouseClicked(this));
 		}
 		
+		public KeyBindingField(KeyCode code) {
+			this.code = code;
+			this.setText(code.toString());
+		}
 		public void setCode(KeyCode code) {
 			this.code = code;
 		}
