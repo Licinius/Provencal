@@ -24,6 +24,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Class;
 import model.Question;
 import view.ListOverviewController;
@@ -73,7 +74,10 @@ public class MainApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             primaryStage.show();
-            primaryStage.setOnHidden(e -> System.exit(0));
+            primaryStage.setOnCloseRequest(e -> {
+            	e.consume();
+            	showExitAlert(e);
+            });
             listOverviewController = loader.getController();
             listOverviewController.setMainApp(this);
             
@@ -81,7 +85,8 @@ public class MainApp extends Application {
             e.printStackTrace();
         }
     }
-    /**
+
+	/**
      * Classify the questions and update the progress or open a dialog if needed
      */
     public void classifyQuestions(String filepath) {
@@ -168,11 +173,17 @@ public class MainApp extends Application {
     }
     
     /**
-     * Save the instance
-     * @param filepath
+     * Open a file chooser to decide where to save the instance
+     * @return boolean, true if the file is saved false otherwise
      */
-    public void saveInstance(String filepath) {
-    	instance.saveInstance(filepath);
+    public boolean saveInstance() {
+    	FileChooser fileChooser = new FileChooser();
+		File file = fileChooser.showSaveDialog(getPrimaryStage());
+		if(file != null) {
+	    	instance.saveInstance(file.getAbsolutePath());
+			return true;
+		}
+		return false;
     }    
     /**
      * Close the application
@@ -202,6 +213,26 @@ public class MainApp extends Application {
     	}
     	return "";
     }
+    
+    private void showExitAlert(WindowEvent event) {
+    	Alert alert = new Alert(AlertType.CONFIRMATION);
+    	((Stage)alert.getDialogPane().getScene().getWindow())
+		.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
+    	ButtonType saveButton = new ButtonType("Save & Quit");
+    	ButtonType exitButton = new ButtonType("Quit");
+    	ButtonType cancelButton = new ButtonType("Cancel");
+    	alert.getButtonTypes().setAll(saveButton, exitButton,cancelButton);
+
+        alert.setTitle("Confirm exit");
+        alert.setHeaderText("Do you want to save before exit ?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get()==saveButton) {
+        	if(saveInstance())
+        		close();
+        }else if(result.get()==exitButton) {
+        	close();
+        }
+	}
     /**
      * Launch the application
      * @param args

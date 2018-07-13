@@ -1,7 +1,5 @@
 package view;
 
-import java.io.File;
-
 import controller.KeyBindingDialog;
 import controller.MainApp;
 import javafx.fxml.FXML;
@@ -10,7 +8,6 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
 import model.Class;
 /**
  * Class manage the ListOverView
@@ -47,13 +44,11 @@ public class ListOverviewController {
 	}
 	/**
 	 * Allow to save the state of the Application
+	 * @return boolean true if the application is saved
 	 */
 	@FXML
-	private void saveApplication() {
-		FileChooser fileChooser = new FileChooser();
-		File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
-		if(file != null)
-			mainApp.saveInstance(file.getAbsolutePath());
+	private boolean saveApplication() {
+		return mainApp.saveInstance();
 	}
 	
 	/**
@@ -61,8 +56,8 @@ public class ListOverviewController {
 	 */
 	@FXML
 	private void saveAndCloseApplication() {
-		saveApplication();
-		closeApplication();
+		if(saveApplication())
+			closeApplication();
 	}
 	
 	/**

@@ -30,7 +30,6 @@ public class KeyBindingDialog implements Runnable{
 	}
 	@Override
 	public void run() {
-		System.out.println("whay");
 		showKeyBindingDialog();
         if(countDown != null) 
         	countDown.countDown();    
@@ -58,6 +57,7 @@ public class KeyBindingDialog implements Runnable{
 	        do {
 	        	dialogStage.showAndWait();
 	        }while(!controller.isValidated());
+	        mainApp.updateProgress(0);
 		 } catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
