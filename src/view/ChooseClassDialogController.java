@@ -190,6 +190,9 @@ public class ChooseClassDialogController {
 					currentQuestion = previousUnclassifiedQuestion();
 					updateView();
 					break;
+				case F2:
+					mainApp.getHostServices().showDocument(currentQuestion.getUrl());
+					break;
 				case ENTER:
 					if(!currentQuestion.isClassified()) {
 						for(Class choosenClass : potentialClasses) {
