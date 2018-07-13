@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import model.Question;
 import view.ChooseClassDialogController;
 /**
- * Open a dialog to choose in wich class to put the question
+ * Open a dialog to choose in which class to put the question
  * @author Dell'omo
  */
 public class ChooseDialog implements Runnable{
@@ -27,7 +27,7 @@ public class ChooseDialog implements Runnable{
 	/**
 	 * Constructor of the Runnable
 	 * @param mainApp The controller mainApp
-	 * @param questions All the question to classified
+	 * @param questions All the questions to classified
 	 */
 	public ChooseDialog(MainApp mainApp,ArrayList<Question> questions)
 	{
@@ -37,8 +37,8 @@ public class ChooseDialog implements Runnable{
 	
 	/**
 	 * Allow to use a countDownLatch to synchronize the thread
-	 * @param countDownLatch
-	 * @return this
+	 * @param countDownLatch the countDownLatch must be initialized to one
+	 * @return the object that called the function
 	 */
 	public ChooseDialog withCountDownLatch(CountDownLatch countDownLatch) {
 		this.countDownLatch = countDownLatch;
@@ -61,7 +61,6 @@ public class ChooseDialog implements Runnable{
             // Create the dialog Stage.
             dialogStage = new Stage();
             dialogStage.setOnCloseRequest(e -> e.consume());
-            dialogStage.setResizable(false);
             dialogStage.setTitle("Question in class");
             dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             dialogStage.initOwner(mainApp.getPrimaryStage());
