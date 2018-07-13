@@ -3,6 +3,7 @@ package view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebView;
 import model.Class;
 import model.Question;
 /**
@@ -13,7 +14,7 @@ public class QuestionViewController{
 	@FXML
 	private Label title;
 	@FXML
-	private Label body;
+	private WebView body;
 	@FXML
 	private Label classes;
 	@FXML
@@ -28,7 +29,7 @@ public class QuestionViewController{
 	public void setQuestion(Question question){
 		this.question = question;
 		this.title.setText(question.getTitle());
-		this.body.setText(question.getBody());
+		this.body.getEngine().loadContent(question.getBody());
 		if(question.isClassified()) {
 			this.title.setStyle(this.title.getStyle()+"-fx-text-fill: #64DD17;");
 		}
