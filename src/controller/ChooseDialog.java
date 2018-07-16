@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Question;
 import view.ChooseClassDialogController;
@@ -18,7 +18,7 @@ import view.ChooseClassDialogController;
 public class ChooseDialog implements Runnable{
 	private MainApp mainApp;
 	private CountDownLatch countDownLatch;
-	private AnchorPane page;
+	private BorderPane page;
 	private Stage dialogStage;
 	
 	
@@ -55,7 +55,7 @@ public class ChooseDialog implements Runnable{
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ChooseDialog.class.getResource("/view/ChooseClassDialog.fxml"));
-            page = (AnchorPane) loader.load();
+            page = loader.load();
             ChooseClassDialogController controller = loader.getController();
             controller.initDialog(mainApp,questions);
             // Create the dialog Stage.

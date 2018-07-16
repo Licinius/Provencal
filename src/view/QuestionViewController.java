@@ -2,7 +2,6 @@ package view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebView;
 import model.Class;
 import model.Question;
@@ -10,15 +9,13 @@ import model.Question;
  * Controller for an anchor pane that display a question
  * @author Dell'omo
  */
-public class QuestionViewController{
+public class QuestionViewController {
 	@FXML
 	private Label title;
 	@FXML
 	private WebView body;
 	@FXML
 	private Label classes;
-	@FXML
-	private GridPane gridPane;
 	private Question question;
 	
 	/**

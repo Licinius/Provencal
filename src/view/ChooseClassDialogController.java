@@ -10,7 +10,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Class;
 import model.Question;
@@ -21,9 +22,9 @@ import model.Question;
  */
 public class ChooseClassDialogController {
 	@FXML
-	private AnchorPane pane;
+	private BorderPane pane;
 	
-	private AnchorPane questionPane;
+	private GridPane questionPane;
 	
 	private MainApp mainApp;
 	private Question currentQuestion;
@@ -52,10 +53,10 @@ public class ChooseClassDialogController {
 	 * @return The AnchorPane to attach to the GridPane
 	 * @throws IOException
 	 */
-	private AnchorPane getQuestionPane(Question question) throws IOException {
+	private GridPane getQuestionPane(Question question) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/QuestionView.fxml"));
-		AnchorPane pane = (AnchorPane)loader.load();
+		GridPane pane = loader.load();
 		QuestionViewController controller = loader.getController();
 		controller.setQuestion(question);
 		return pane;
@@ -134,7 +135,8 @@ public class ChooseClassDialogController {
 			} catch (IOException e) {
 				((Stage)pane.getScene().getWindow()).close();
 			}
-			pane.getChildren().add(questionPane);
+			pane.setCenter(questionPane);
+			
 		}
 	}
 	/**
