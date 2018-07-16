@@ -121,7 +121,7 @@ public class MainApp extends Application {
     	Platform.runLater(
     			new LoadingScreen(this, countDownLatch)
 		);
-    	String filepathQuestions = "src/resources/questions/questions.ser";
+    	String filepathQuestions = "resources/questions.ser";
     	instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
     	countDownLatch.countDown();
     	countDownLatch  = new CountDownLatch(1);

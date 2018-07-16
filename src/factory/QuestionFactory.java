@@ -1,7 +1,8 @@
 package factory;
 
-import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -98,11 +99,11 @@ public class QuestionFactory {
 	
 	@SuppressWarnings("unchecked")
 	public HashMap<Integer, Question> getAllSerializedQuestions(String filepath){
-		FileInputStream fileInputStream;
 		HashMap<Integer, Question> result = null;
 		try {
-			fileInputStream = new FileInputStream(filepath);
-			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
+			BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+			ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream);
 			result = (HashMap<Integer, Question>) objectInputStream.readObject();
 			objectInputStream.close();
 		} catch (IOException | ClassNotFoundException e ) {

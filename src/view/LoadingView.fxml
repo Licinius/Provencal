@@ -13,7 +13,7 @@
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources/images/loadingScreen.gif" />
+                  <Image url="/view/resources/images/loadingScreen.gif" />
                </image>
             </ImageView>
          </children>
