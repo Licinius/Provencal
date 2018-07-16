@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Class;
 import model.Question;
@@ -22,7 +21,7 @@ import model.Question;
  */
 public class ChooseClassDialogController {
 	@FXML
-	private GridPane gridPane;
+	private AnchorPane pane;
 	
 	private AnchorPane questionPane;
 	
@@ -41,7 +40,7 @@ public class ChooseClassDialogController {
 	 * 
 	 */
 	public void initialize() {
-		gridPane.setOnKeyPressed(new KeyPressed());
+		pane.setOnKeyPressed(new KeyPressed());
 		potentialClasses = new HashSet<>();
 		index = 0;
 	}
@@ -125,17 +124,17 @@ public class ChooseClassDialogController {
 	}
 	public void updateView() {
 		potentialClasses.clear();
-		gridPane.getChildren().remove(questionPane);
+		pane.getChildren().remove(questionPane);
 		if(currentQuestion == null) {
-			((Stage)gridPane.getScene().getWindow()).close();
+			((Stage)pane.getScene().getWindow()).close();
 		}else {
 			potentialClasses.addAll(currentQuestion.getClasses());
 			try {
 				questionPane = getQuestionPane(currentQuestion);
 			} catch (IOException e) {
-				((Stage)gridPane.getScene().getWindow()).close();
+				((Stage)pane.getScene().getWindow()).close();
 			}
-			gridPane.add(questionPane, 0, 0);
+			pane.getChildren().add(questionPane);
 		}
 	}
 	/**
