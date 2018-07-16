@@ -81,12 +81,14 @@ public class ChooseClassDialogController {
 	 */
 	public Question nextUnclassifiedQuestion() {
 		Question question;
-		while(index<questions.size()-1) {
+		int previousIndex = index;
+		while(index<questions.size()) {
     		question = questions.get(index);
     		if(!question.isClassified())
     			return question;
 			index++;
     	}
+		index = previousIndex;
 		return currentQuestion;
 	}
 	
@@ -96,12 +98,14 @@ public class ChooseClassDialogController {
 	 */
 	public Question previousUnclassifiedQuestion() {
 		Question question;
-		while(index<=questions.size() && index>0) {
+		int previousIndex = index;
+		while(index>0) {
 			index--;
     		question = questions.get(index);
     		if(!question.isClassified())
     			return question;
     	}
+		index = previousIndex;
 		return currentQuestion;
 	}
 	/**

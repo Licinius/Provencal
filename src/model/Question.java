@@ -30,6 +30,8 @@ public class Question extends Post implements Serializable {
 	public Question() {
 		super();
 		this.title = "Le titre d'une question";
+		this.classes = new Classes();
+		this.mapAnswer = new HashMap<Integer, Answer>();
 	}
 
 	//GETTER & SETTER
