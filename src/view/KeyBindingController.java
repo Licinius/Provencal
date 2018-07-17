@@ -15,7 +15,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Class;
-
+/**
+ * This class is the controller for the KeyBindingView
+ * @author Dell'omo
+ *
+ */
 public class KeyBindingController {
 	@FXML
 	private GridPane gridPane;
@@ -75,6 +79,7 @@ public class KeyBindingController {
 			}
 			index+=1;
 		}
+		mainApp.setKeyMapping(keyMapping);
 		validated = (!validated? keyCodeCount>0 :true);
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
