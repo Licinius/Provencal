@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import view.AlertException;
 import view.KeyBindingController;
 public class KeyBindingDialog implements Runnable{
 	private Stage dialogStage;
@@ -59,9 +60,8 @@ public class KeyBindingDialog implements Runnable{
 	        }while(!controller.isValidated());
 	        mainApp.updateProgress(0);
 		 } catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			new AlertException(e1).showAlert();
+		}
 	}
 
 }

@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Class;
 import model.Question;
+import view.AlertException;
 import view.ListOverviewController;
 /**
  * Main Controller of the application
@@ -34,15 +35,13 @@ import view.ListOverviewController;
  *
  */
 public class MainApp extends Application {
-
 	private Stage primaryStage;
-    private BorderPane rootLayout;
-    private Scene scene;
     private ListOverviewController listOverviewController;
     private ObservableList<Class> classData = FXCollections.observableArrayList();
     private DoubleProperty progress = new SimpleDoubleProperty(0.0);
     private Instance instance;
     private int classifiedQuestionsCount = 0;
+    
     /**
      * Start the application, i.e. init the rootLayout, launch the task to classify the question
      */
@@ -72,8 +71,8 @@ public class MainApp extends Application {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("/view/ListOverview.fxml"));
-            rootLayout = (BorderPane) loader.load();
-            scene = new Scene(rootLayout);
+            BorderPane rootLayout = (BorderPane) loader.load();
+            Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             primaryStage.show();
@@ -82,9 +81,8 @@ public class MainApp extends Application {
             });
             listOverviewController = loader.getController();
             listOverviewController.setMainApp(this);
-            
         } catch (IOException e) {
-            e.printStackTrace();
+           new AlertException(e).showAlert();
         }
     }
 
@@ -120,7 +118,12 @@ public class MainApp extends Application {
     	Platform.runLater(
     			new LoadingScreen(this, countDownLatch)
 		);
-    	instance = instance.loadInstance(filepath);
+    	try {
+			instance = instance.loadInstance(filepath);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+			this.close();
+		}
     	countDownLatch.countDown();
 	}
     /**
@@ -143,6 +146,7 @@ public class MainApp extends Application {
 			countDownLatch.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			this.close();
 		}
 	}
 	

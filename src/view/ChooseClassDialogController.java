@@ -12,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import model.Class;
 import model.Question;
 /**
@@ -126,18 +125,13 @@ public class ChooseClassDialogController {
 	public void updateView() {
 		potentialClasses.clear();
 		pane.getChildren().remove(questionPane);
-		if(currentQuestion == null) {
-			((Stage)pane.getScene().getWindow()).close();
-		}else {
-			potentialClasses.addAll(currentQuestion.getClasses());
-			try {
-				questionPane = getQuestionPane(currentQuestion);
-			} catch (IOException e) {
-				((Stage)pane.getScene().getWindow()).close();
-			}
-			pane.setCenter(questionPane);
-			
+		potentialClasses.addAll(currentQuestion.getClasses());
+		try {
+			questionPane = getQuestionPane(currentQuestion);
+		} catch (IOException e) {
+			new AlertException(e).showAlert();
 		}
+		pane.setCenter(questionPane);
 	}
 	/**
 	 * Event handler to read each keyPressed

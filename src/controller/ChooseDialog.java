@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Question;
+import view.AlertException;
 import view.ChooseClassDialogController;
 /**
  * Open a dialog to choose in which class to put the question
@@ -18,8 +19,6 @@ import view.ChooseClassDialogController;
 public class ChooseDialog implements Runnable{
 	private MainApp mainApp;
 	private CountDownLatch countDownLatch;
-	private BorderPane page;
-	private Stage dialogStage;
 	
 	
 	private ArrayList<Question> questions;
@@ -55,11 +54,11 @@ public class ChooseDialog implements Runnable{
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ChooseDialog.class.getResource("/view/ChooseClassDialog.fxml"));
-            page = loader.load();
+            BorderPane page = loader.load();
             ChooseClassDialogController controller = loader.getController();
             controller.initDialog(mainApp,questions);
             // Create the dialog Stage.
-            dialogStage = new Stage();
+            Stage dialogStage = new Stage();
             dialogStage.setOnCloseRequest(e -> e.consume());
             dialogStage.setTitle("Question in class");
             dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
@@ -72,7 +71,7 @@ public class ChooseDialog implements Runnable{
 			if(countDownLatch != null)//If the main stage must wait to continue
             	countDownLatch.countDown();
         } catch (IOException e) {
-            e.printStackTrace();
+        	new AlertException(e).showAlert();
         }
 	}
 	

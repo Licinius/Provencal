@@ -11,6 +11,7 @@ import java.util.HashMap;
 import javafx.scene.input.KeyCode;
 import model.Class;
 import model.Question;
+import view.AlertException;
 
 public class Instance implements Serializable{
 		/**
@@ -43,22 +44,18 @@ public class Instance implements Serializable{
     			objectOutputStream.writeObject(this);
     			objectOutputStream.close();
     		} catch (IOException  e) {
-    			e.printStackTrace();
+    			System.out.println("coucou");
+    			new AlertException(e).show();
     		}
     	}
 		
-		public Instance loadInstance(String filepath) {
+		public Instance loadInstance(String filepath) throws IOException,ClassNotFoundException {
 			FileInputStream fileInputStream;
 			Instance instance = null;
-			try {
-				fileInputStream = new FileInputStream(filepath);
-				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-				instance = (Instance) objectInputStream.readObject();
-				objectInputStream.close();
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-				System.out.println("Problem while loading...");
-			}
+			fileInputStream = new FileInputStream(filepath);
+			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+			instance = (Instance) objectInputStream.readObject();
+			objectInputStream.close();
 			return instance;
 		}
     }

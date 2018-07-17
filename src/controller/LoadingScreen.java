@@ -50,9 +50,7 @@ public class LoadingScreen implements Runnable{
 	        Thread waitingThread = new Thread(wait);
 	        waitingThread.setDaemon(true);
 	        waitingThread.start();
-	       
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
