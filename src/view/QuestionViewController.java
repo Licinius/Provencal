@@ -1,9 +1,10 @@
 package view;
 
+import java.util.stream.Collectors;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.web.WebView;
-import model.Class;
 import model.Question;
 /**
  * Controller for an anchor pane that display a question
@@ -30,10 +31,8 @@ public class QuestionViewController {
 		if(question.isClassified()) {
 			this.title.setStyle(this.title.getStyle()+"-fx-text-fill: #64DD17;");
 		}
-		String classesName = "";
-		for(Class aClass : question.getClasses()) {
-			classesName+=aClass.getName() + ", ";
-		}
+		String classesName = question.getClasses().stream().map(p -> p.getName())
+                .collect(Collectors.joining(", "));
 		this.classes.setText(classesName);
 	}
 	
