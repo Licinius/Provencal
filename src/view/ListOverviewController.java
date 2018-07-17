@@ -12,7 +12,7 @@ import model.Class;
 /**
  * Class manage the ListOverView
  * This class is connected with the MainApp
- * @author Florent
+ * @author Dell'omo
  *
  */
 public class ListOverviewController {
@@ -35,7 +35,10 @@ public class ListOverviewController {
 		numberQuestionColumn.setCellValueFactory(
                 new PropertyValueFactory<Class, Number>("sizeQuestions"));
 	}
-	
+	/**
+	 * This function will bind the property of progress to the progress bar in the view
+	 * @param mainApp The MainApp of the application
+	 */
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
 		classTable.setItems(mainApp.getClassData());

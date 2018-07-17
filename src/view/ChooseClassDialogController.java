@@ -122,6 +122,9 @@ public class ChooseClassDialogController {
 	public Question previousQuestion() {
 		return ((index<=questions.size() && index>0)?questions.get(--index):currentQuestion);
 	}
+	/**
+	 * Update the view with a new question, it will clear the potentialClasses and remove the question pane before adding the pane
+	 */
 	public void updateView() {
 		potentialClasses.clear();
 		pane.getChildren().remove(questionPane);

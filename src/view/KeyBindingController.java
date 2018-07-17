@@ -35,7 +35,10 @@ public class KeyBindingController {
 		row = 1;
 		validated = false;
 	}
-	
+	/**
+	 * When the mainApp is set the view has to recreate the old rows and create a new one 
+	 * @param mainApp the MainApp of the application
+	 */
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
 		recreateRows();
@@ -75,7 +78,10 @@ public class KeyBindingController {
 		validated = (!validated? keyCodeCount>0 :true);
 		((Stage) gridPane.getScene().getWindow()).close();
 	}
-	
+	/**
+	 * 
+	 * @return true if the row is validated
+	 */
 	public boolean isValidated() {
 		return validated;
 	}
@@ -96,7 +102,10 @@ public class KeyBindingController {
 		gridPane.add(addClassbutton, 2, row);
 		row++;
 	}
-	
+	/**
+	 * This function recreate rows that have been already validate by the user<br>
+	 * The rows are disable and not add to the arrayList of TextField and KeyBindingField
+	 */
 	private void recreateRows() {
 		for(KeyCode keycode : mainApp.getKeyMapping().keySet()) {
 			validated = true;
@@ -123,14 +132,25 @@ public class KeyBindingController {
 			this.setOnKeyReleased(new KeyReleased(this) );
 			this.setOnMouseClicked(new MouseClicked(this));
 		}
-		
+		/**
+		 * Create a textField with a keycode already bind to it
+		 * @param code The code bind to the textField
+		 */
 		public KeyBindingField(KeyCode code) {
 			this.code = code;
 			this.setText(code.toString());
 		}
+		/**
+		 * 
+		 * @param code the KeyCode to set
+		 */
 		public void setCode(KeyCode code) {
 			this.code = code;
 		}
+		/**
+		 * 
+		 * @return The keyCode of the textField
+		 */
 		public KeyCode getCode() {
 			return this.code;
 		}

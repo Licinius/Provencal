@@ -21,8 +21,7 @@ public class QuestionViewController {
 	
 	/**
 	 * Set the information of a question in the view
-	 * @param mainApp
-	 * @param question
+	 * @param question The question to set
 	 */
 	public void setQuestion(Question question){
 		this.question = question;
@@ -36,7 +35,10 @@ public class QuestionViewController {
 		this.classes.setText(classesName);
 	}
 	
-	
+	/**
+	 * 
+	 * @return the question in the View
+	 */
 	public Question getQuestion() {
 		return this.question;
 	}
