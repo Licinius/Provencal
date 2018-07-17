@@ -195,6 +195,9 @@ public class ChooseClassDialogController {
 					currentQuestion = previousUnclassifiedQuestion();
 					updateView();
 					break;
+				case F1:
+					mainApp.displayMapping();
+					break;
 				case F2:
 					mainApp.getHostServices().showDocument(currentQuestion.getUrl());
 					break;

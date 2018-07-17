@@ -69,6 +69,13 @@ public class ListOverviewController {
 	}
 	
 	/**
+	 * Show an alert to display the mapping of classes
+	*/
+	@FXML
+	private void displayMapping() {
+		mainApp.displayMapping();
+	}
+	/**
 	 * Allow to create a new class
 	 */
 	@FXML

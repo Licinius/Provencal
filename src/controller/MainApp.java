@@ -43,6 +43,9 @@ public class MainApp extends Application {
     private DoubleProperty progress = new SimpleDoubleProperty(0.0);
     private Instance instance;
     private int classifiedQuestionsCount = 0;
+    /**
+     * Start the application, i.e. init the rootLayout, launch the task to classify the question
+     */
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -52,7 +55,7 @@ public class MainApp extends Application {
         Task<Void> classifyTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                classifyQuestions(filepath);
+                showFirstChooseDialog(filepath);
                 return null;
             }
         };
@@ -75,7 +78,6 @@ public class MainApp extends Application {
             primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
             primaryStage.show();
             primaryStage.setOnCloseRequest(e -> {
-            	e.consume();
             	showExitAlert(e);
             });
             listOverviewController = loader.getController();
@@ -86,26 +88,33 @@ public class MainApp extends Application {
         }
     }
 
-	/**
-     * Classify the questions and update the progress or open a dialog if needed
+    /**
+     * This fonction will load a previous instance or create a new one if the param is empty<br>
+     * It will also count the number of question classified and init the progressBar<br>
+     * Finally, it will display the chooseDialog
+     * @param filepath the absolute path of the previous instance or an empty string
      */
-    public void classifyQuestions(String filepath) {
+    public void showFirstChooseDialog(String filepath) {
     	if(filepath.isEmpty()) {
     		createNewInstance();
     	}else {
     		loadPreviousInstance(filepath);
     		classData.setAll(instance.keyMapping.values());
-    	}
-    	for(Question question : instance.getQuestions().values()) {
-    		if(question.isClassified()) {
-    			classifiedQuestionsCount++;
-    		}
+        	for(Question question : instance.getQuestions().values()) {
+        		if(question.isClassified()) {
+        			classifiedQuestionsCount++;
+        		}
+        	}
     	}
     	int total = instance.getQuestionsCount();
    		progress.set((double)classifiedQuestionsCount/total);//How to set the progress
    		ArrayList<Question> questions = new ArrayList<Question>(instance.getQuestions().values());
    		Platform.runLater(new ChooseDialog(this,questions));
     }
+    /**
+     * This fonction will load the previous instance meanwhile displaying a loading screen
+     * @param filepath the absolute path of the instance
+     */
     private void loadPreviousInstance(String filepath) {
     	CountDownLatch countDownLatch = new CountDownLatch(1);
     	Platform.runLater(
@@ -114,7 +123,9 @@ public class MainApp extends Application {
     	instance = instance.loadInstance(filepath);
     	countDownLatch.countDown();
 	}
-
+    /**
+     * Create a new instance, firstly this function will load the questions and then ask the user to map his keys
+     */
 	private void createNewInstance() {
       	QuestionFactory questionFactory = new QuestionFactory();
     	CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -134,40 +145,47 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
+	
 	/**
-	 * Update the progressBar and the grid of classes
+	 * Update the progress with the increment, the progressBar and classData will be update
+	 * @param increment the increment of question classified (can be negative)
 	 */
-	public void updateProgress(int raise) {
-		classifiedQuestionsCount+=raise;
+	public void updateProgress(int increment) {
+		classifiedQuestionsCount+=increment;
 		this.progress.set((double)classifiedQuestionsCount/instance.getQuestionsCount());
 		classData.setAll(instance.keyMapping.values());
 	}
 	/**
-     * Returns the main stage.
-     * @return
+     * @return the primary stage of the application
      */
     public Stage getPrimaryStage() {
         return primaryStage;
     }
     /**
-     * Returns the classData
-     * @return
+     * 
+     * @return Returns the classData
      */
     public ObservableList<Class> getClassData(){
     	return classData;
     }
     /**
-     * Return the progress of the classification
-     * @return
+     * 
+     * @return the progress property of the classification
      */
     public DoubleProperty getProgressProperty() {
     	return progress;
     }
-    
+    /**
+     * 
+     * @return the keyMapping of the instance
+     */
     public HashMap<KeyCode,Class> getKeyMapping(){
     	return instance.keyMapping;
     }
-    
+    /**
+     * 
+     * @param keyMapping the keyMapping to sets (HashMap<KeyCode,Class)
+     */
     public void setKeyMapping(HashMap<KeyCode,Class> keyMapping) {
     	 instance.keyMapping = keyMapping;
     }
@@ -191,6 +209,15 @@ public class MainApp extends Application {
     public void close() {
     	System.exit(0);
     }
+    
+    /**
+     * This function is fired to display an alert with 2 choices
+     * <ul>
+     * <li>Load : This choice will enable the user the load a previous instance 
+     * <li>New  : This choice will create a new instance and allow the user to bind key to class   
+     * </ul>
+     * @return An empty string if the user clicks on new or cancel the FileChooser, or else the absolute path of the instance serialized
+     */
     public String showStartAlert() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	((Stage)alert.getDialogPane().getScene().getWindow())
@@ -213,8 +240,20 @@ public class MainApp extends Application {
     	}
     	return "";
     }
+    /**
+     * This function display a window with the classes mapping 
+     */
+    public void displayMapping() {
+	
+    }
     
+    /**
+     * This function shows an alert when call<br>
+     * This alert is used to know if the user wants to quit, save & quit or cancel the operation
+     * @param event A WindowEvent to consume
+     */
     private void showExitAlert(WindowEvent event) {
+    	event.consume();
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	((Stage)alert.getDialogPane().getScene().getWindow())
 		.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
