@@ -69,7 +69,59 @@ public class MainApp extends Application {
 			loadPreviousInstance(filepath);		
 		}
 	}
+	
+	/**
+	 * @return the primary stage of the application
+	 */
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
 
+	/**
+	 * 
+	 * @return Returns the classData
+	 */
+	public ObservableList<Class> getClassData() {
+		return classData;
+	}
+	
+	/**
+	 * 
+	 * @return Returns the Mapping in a observable list
+	 */
+	public ObservableList<Map.Entry<KeyCode,Class>> getMappingData(){
+		return mappingData;
+	}
+	
+	/**
+	 * @return the progress property of the classification
+	 */
+	public DoubleProperty getProgressProperty() {
+		return progress;
+	}
+
+	/**
+	 * @return the keyMapping of the instance
+	 */
+	public HashMap<KeyCode, Class> getKeyMapping() {
+		return instance.keyMapping;
+	}
+	
+	/**
+	 * @return the achievement manager of the instance
+	 */
+	public AchievementManager getAchievementManager() {
+		return instance.getAchievementManager();
+	}
+	
+	/**
+	 * @param keyMapping the keyMapping to sets (HashMap<KeyCode,Class)
+	 */
+	public void setKeyMapping(HashMap<KeyCode, Class> keyMapping) {
+		instance.keyMapping = keyMapping;
+		mappingData.setAll(instance.keyMapping.entrySet());
+	}
+	
 	/**
 	 * Initializes the root layout.
 	 */
@@ -95,18 +147,16 @@ public class MainApp extends Application {
 	}
 
 	/**
-	 * This fonction will load the previous instance meanwhile displaying a loading
-	 * screen
+	 * This function will load the previous instance meanwhile displaying a loading screen
 	 * 
-	 * @param filepath
-	 *            the absolute path of the instance
+	 * @param filepath the absolute path of the instance
 	 */
 	private void loadPreviousInstance(String filepath) {
 		final CountDownLatch countDownLatch = new CountDownLatch(1);
 		Task<Void> loadInstance = loadInstance(filepath);
 		loadInstance.setOnSucceeded((arg0) -> {
 			countDownLatch.countDown();
-			showChooseDialog();
+			showChooseClass();
 		});
 		new Thread(loadInstance).start();
 		new LoadingScreenStage(this, countDownLatch).showAndWait();
@@ -129,19 +179,25 @@ public class MainApp extends Application {
 
 	}
 	
+	/**
+	 * Function to map the key after creating a new Instance
+	 */
 	private void showKeyBindingDialog() {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		new KeyBindingStage(this).withCountdown(countDownLatch).showAndWait();
 		try {
 			countDownLatch.await();
-			showChooseDialog();
+			showChooseClass();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			this.close();
 		}
 	}
 	
-	private void showChooseDialog() {
+	/**
+	 * Function fired to show the first ChooseClass
+	 */
+	private void showChooseClass() {
 		int total = instance.getQuestionsCount();
 		progress.set((double) classifiedQuestionsCount / total);// How to set the progress
 		ArrayList<Question> questions = new ArrayList<Question>(instance.getQuestions().values());
@@ -164,66 +220,10 @@ public class MainApp extends Application {
 		classData.setAll(getKeyMapping().values());
 	}
 
-	/**
-	 * @return the primary stage of the application
-	 */
-	public Stage getPrimaryStage() {
-		return primaryStage;
-	}
 
-	/**
-	 * 
-	 * @return Returns the classData
-	 */
-	public ObservableList<Class> getClassData() {
-		return classData;
-	}
-	
-	/**
-	 * 
-	 * @return Returns the Mapping in a observable list
-	 */
-	public ObservableList<Map.Entry<KeyCode,Class>> getMappingData(){
-		return mappingData;
-	}
-	
-	/**
-	 * 
-	 * @return the progress property of the classification
-	 */
-	public DoubleProperty getProgressProperty() {
-		return progress;
-	}
-
-	/**
-	 * 
-	 * @return the keyMapping of the instance
-	 */
-	public HashMap<KeyCode, Class> getKeyMapping() {
-		return instance.keyMapping;
-	}
-	
-	/**
-	 * 
-	 * @return the achievement manager of the instance
-	 */
-	public AchievementManager getAchievementManager() {
-		return instance.getAchievementManager();
-	}
-	
-	/**
-	 * 
-	 * @param keyMapping
-	 *            the keyMapping to sets (HashMap<KeyCode,Class)
-	 */
-	public void setKeyMapping(HashMap<KeyCode, Class> keyMapping) {
-		instance.keyMapping = keyMapping;
-		mappingData.setAll(instance.keyMapping.entrySet());
-	}
 
 	/**
 	 * Open a file chooser to decide where to save the instance
-	 * 
 	 * @return boolean, true if the file is saved false otherwise
 	 */
 	public boolean saveInstance() {
@@ -242,7 +242,14 @@ public class MainApp extends Application {
 	public void close() {
 		System.exit(0);
 	}
-
+	
+	/**
+	 * This function display a window with the classes mapping
+	 */
+	public void displayMapping() {
+		MappingStage.showMapping(this);
+	}
+	
 	/**
 	 * This function is fired to display an alert with 2 choices
 	 * <ul>
@@ -276,21 +283,14 @@ public class MainApp extends Application {
 		}
 		return "";
 	}
-
-	/**
-	 * This function display a window with the classes mapping
-	 */
-	public void displayMapping() {
-		MappingStage.showMapping(this);
-	}
-
+	
 	/**
 	 * This function shows an alert when call<br>
 	 * This alert is used to know if the user wants to quit, save & quit or cancel
 	 * the operation
 	 * 
 	 * @param event
-	 *            A WindowEvent to consume
+	 *   A WindowEvent to consume
 	 */
 	private void showExitAlert(WindowEvent event) {
 		event.consume();
@@ -315,6 +315,9 @@ public class MainApp extends Application {
 		}
 	}
 	
+	/**
+	 * @return a Task to load the question from the questions.ser in the resources
+	 */
 	private Task<Void> loadQuestions(){
 		return new Task<Void>() {
 	        @Override
@@ -327,6 +330,11 @@ public class MainApp extends Application {
 	    };
 	}
 	
+	/**
+	 * 
+	 * @param filepath The absolute path to the instance
+	 * @return a Task to load the instance 
+	 */
 	private Task<Void> loadInstance(String filepath){
 		return new Task<Void>() {
 			@Override
@@ -343,9 +351,9 @@ public class MainApp extends Application {
 			}
 		};
 	}
+	
 	/**
 	 * Launch the application
-	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
