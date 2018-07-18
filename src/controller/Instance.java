@@ -21,19 +21,17 @@ public class Instance implements Serializable{
 		public HashMap<KeyCode,Class> keyMapping;
     	private HashMap<Integer,Question> questions;
     	private AchievementManager achievementManager;
-    	private int questionsCount;
+    	
     	public Instance() {
     		keyMapping = new HashMap<KeyCode,Class>();
     		questions = new HashMap<Integer,Question>();
     		achievementManager = new AchievementManager();
-    		questionsCount = 0;
     	}
     	public void setQuestions(HashMap<Integer,Question> questions) {
     		this.questions = questions;
-    		this.questionsCount = questions.size();
     	}
     	public int getQuestionsCount() {
-    		return this.questionsCount;
+    		return this.questions.size();
     	}
     	public AchievementManager getAchievementManager() {
     		return achievementManager;
