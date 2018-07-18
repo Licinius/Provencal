@@ -8,10 +8,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import achievement.AchievementManager;
 import javafx.scene.input.KeyCode;
 import model.Class;
 import model.Question;
-import view.AlertException;
 
 public class Instance implements Serializable{
 		/**
@@ -20,10 +20,12 @@ public class Instance implements Serializable{
 		private static final long serialVersionUID = 5428177751212085034L;
 		public HashMap<KeyCode,Class> keyMapping;
     	private HashMap<Integer,Question> questions;
+    	private AchievementManager achievementManager;
     	private int questionsCount;
     	public Instance() {
     		keyMapping = new HashMap<KeyCode,Class>();
     		questions = new HashMap<Integer,Question>();
+    		achievementManager = new AchievementManager();
     		questionsCount = 0;
     	}
     	public void setQuestions(HashMap<Integer,Question> questions) {
@@ -32,6 +34,9 @@ public class Instance implements Serializable{
     	}
     	public int getQuestionsCount() {
     		return this.questionsCount;
+    	}
+    	public AchievementManager getAchievementManager() {
+    		return achievementManager;
     	}
     	public HashMap<Integer,Question> getQuestions() {
     		return this.questions;
@@ -44,8 +49,7 @@ public class Instance implements Serializable{
     			objectOutputStream.writeObject(this);
     			objectOutputStream.close();
     		} catch (IOException  e) {
-    			System.out.println("coucou");
-    			new AlertException(e).show();
+    			e.printStackTrace();
     		}
     	}
 		

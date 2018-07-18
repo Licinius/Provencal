@@ -40,7 +40,7 @@ public class KeyBindingDialog implements Runnable{
 		// Load the fxml file and create a new stage for the popup dialog.
 		 try {
 			FXMLLoader loader = new FXMLLoader();
-	        loader.setLocation(ChooseDialog.class.getResource("/view/keyBindingView.fxml"));
+	        loader.setLocation(getClass().getResource("/view/KeyBindingView.fxml"));
 			page = loader.load();
 	        controller = loader.getController();
 	        controller.setMainApp(this.mainApp);

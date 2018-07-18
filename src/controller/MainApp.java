@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
+import achievement.AchievementManager;
+import achievement.EnumAchievements;
 import factory.QuestionFactory;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -46,7 +48,7 @@ public class MainApp extends Application {
 	private DoubleProperty progress = new SimpleDoubleProperty(0.0);
 	private Instance instance;
 	private int classifiedQuestionsCount = 0;
-
+	
 	/**
 	 * Start the application, i.e. init the rootLayout, launch the task to classify
 	 * the question
@@ -171,7 +173,10 @@ public class MainApp extends Application {
 	 */
 	public void updateProgress(int increment) {
 		classifiedQuestionsCount += increment;
-		this.progress.set((double) classifiedQuestionsCount / instance.getQuestionsCount());
+		double newProgress = (double) classifiedQuestionsCount / instance.getQuestionsCount();
+		if(newProgress>0.5)
+			getAchievementManager().displayAchievement(EnumAchievements.ACH_MID_CLASS);
+		this.progress.set(newProgress);
 		classData.setAll(getKeyMapping().values());
 	}
 
@@ -190,9 +195,14 @@ public class MainApp extends Application {
 		return classData;
 	}
 	
+	/**
+	 * 
+	 * @return Returns the Mapping in a observable list
+	 */
 	public ObservableList<Map.Entry<KeyCode,Class>> getMappingData(){
 		return mappingData;
 	}
+	
 	/**
 	 * 
 	 * @return the progress property of the classification
@@ -208,7 +218,15 @@ public class MainApp extends Application {
 	public HashMap<KeyCode, Class> getKeyMapping() {
 		return instance.keyMapping;
 	}
-
+	
+	/**
+	 * 
+	 * @return the achievement manager of the instance
+	 */
+	public AchievementManager getAchievementManager() {
+		return instance.getAchievementManager();
+	}
+	
 	/**
 	 * 
 	 * @param keyMapping
@@ -308,6 +326,8 @@ public class MainApp extends Application {
 				close();
 		} else if (result.get() == exitButton) {
 			close();
+		}else {
+			getAchievementManager().displayAchievement(EnumAchievements.ACH_ONE_MORE);
 		}
 	}
 

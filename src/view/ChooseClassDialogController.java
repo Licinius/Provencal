@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import achievement.EnumAchievements;
 import controller.MainApp;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -71,6 +72,8 @@ public class ChooseClassDialogController {
 		this.mainApp = mainApp;
 		this.questions = questions;
 		currentQuestion = nextUnclassifiedQuestion();
+		if(currentQuestion == null)
+			currentQuestion = questions.get(0);
 		updateView();
 	}
 	
@@ -175,14 +178,16 @@ public class ChooseClassDialogController {
 					updateView();
 					break;
 				case DELETE : 
-					Iterator<Class> iteratorClasses = currentQuestion.getClasses().iterator();
-					while(iteratorClasses.hasNext()) {
-						Class classToRemove = iteratorClasses.next();
-						classToRemove.removeQuestion(currentQuestion);
-						iteratorClasses.remove();
+					if(!currentQuestion.getClasses().isEmpty()) {
+						Iterator<Class> iteratorClasses = currentQuestion.getClasses().iterator();
+						while(iteratorClasses.hasNext()) {
+							Class classToRemove = iteratorClasses.next();
+							classToRemove.removeQuestion(currentQuestion);
+							iteratorClasses.remove();
+						}
+						updateView();
+						mainApp.updateProgress(-1);
 					}
-					updateView();
-					mainApp.updateProgress(-1);
 					break;
 				case PAGE_UP:
 					currentQuestion = nextUnclassifiedQuestion();
@@ -210,7 +215,7 @@ public class ChooseClassDialogController {
 							if(questionToDisplay==currentQuestion) {
 								questionToDisplay = previousUnclassifiedQuestion();
 								if(questionToDisplay == currentQuestion) {
-									System.out.println("Fini");
+									mainApp.getAchievementManager().displayAchievement(EnumAchievements.ACH_FINISH_CLASS);
 								}
 							}
 							currentQuestion=questionToDisplay;
@@ -219,6 +224,8 @@ public class ChooseClassDialogController {
 					}
 					break;
 				default:
+					if(!mainApp.getKeyMapping().containsKey(arg0.getCode()))
+							mainApp.getAchievementManager().displayAchievement(EnumAchievements.ACH_WHAT_DOES_THIS_BUTTON_DO);
 					break;
 			}
 		}
