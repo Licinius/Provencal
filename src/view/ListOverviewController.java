@@ -1,6 +1,5 @@
 package view;
 
-import controller.KeyBindingDialog;
 import controller.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
@@ -9,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Class;
+import stage.KeyBindingStage;
 /**
  * Class manage the ListOverView
  * This class is connected with the MainApp
@@ -83,6 +83,6 @@ public class ListOverviewController {
 	 */
 	@FXML
 	private void addClass() {
-		new KeyBindingDialog(mainApp).showKeyBindingDialog();
+		new KeyBindingStage(mainApp).showAndWait();
 	}
 }

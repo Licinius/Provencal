@@ -12,7 +12,6 @@ import achievement.AchievementManager;
 import achievement.EnumAchievements;
 import factory.QuestionFactory;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
@@ -31,6 +30,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Class;
 import model.Question;
+import stage.ChooseClassStage;
+import stage.KeyBindingStage;
+import stage.LoadingScreenStage;
+import stage.MappingStage;
 import view.AlertException;
 import view.ListOverviewController;
 
@@ -59,16 +62,12 @@ public class MainApp extends Application {
 		this.primaryStage.setTitle("Provençal le Gaulois");
 		initRootLayout();
 		String filepath = showStartAlert();
-		Task<Void> classifyTask = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				showFirstChooseDialog(filepath);
-				return null;
-			}
-		};
-		Thread classifyThread = new Thread(classifyTask);
-		classifyThread.setDaemon(true);
-		classifyThread.start();
+		if (filepath.isEmpty()) {
+			createNewInstance();
+		}
+		else {
+			loadPreviousInstance(filepath);		
+		}
 	}
 
 	/**
@@ -96,35 +95,6 @@ public class MainApp extends Application {
 	}
 
 	/**
-	 * This fonction will load a previous instance or create a new one if the param
-	 * is empty<br>
-	 * It will also count the number of question classified and init the
-	 * progressBar<br>
-	 * Finally, it will display the chooseDialog
-	 * 
-	 * @param filepath
-	 *            the absolute path of the previous instance or an empty string
-	 */
-	public void showFirstChooseDialog(String filepath) {
-		if (filepath.isEmpty()) {
-			createNewInstance();
-		} else {
-			loadPreviousInstance(filepath);
-			classData.setAll(getKeyMapping().values());
-			mappingData.setAll(getKeyMapping().entrySet());
-			for (Question question : instance.getQuestions().values()) {
-				if (question.isClassified()) {
-					classifiedQuestionsCount++;
-				}
-			}
-		}
-		int total = instance.getQuestionsCount();
-		progress.set((double) classifiedQuestionsCount / total);// How to set the progress
-		ArrayList<Question> questions = new ArrayList<Question>(instance.getQuestions().values());
-		Platform.runLater(new ChooseDialog(this, questions));
-	}
-
-	/**
 	 * This fonction will load the previous instance meanwhile displaying a loading
 	 * screen
 	 * 
@@ -132,15 +102,15 @@ public class MainApp extends Application {
 	 *            the absolute path of the instance
 	 */
 	private void loadPreviousInstance(String filepath) {
-		CountDownLatch countDownLatch = new CountDownLatch(1);
-		Platform.runLater(new LoadingScreen(this, countDownLatch));
-		try {
-			instance = instance.loadInstance(filepath);
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			this.close();
-		}
-		countDownLatch.countDown();
+		final CountDownLatch countDownLatch = new CountDownLatch(1);
+		Task<Void> loadInstance = loadInstance(filepath);
+		loadInstance.setOnSucceeded((arg0) -> {
+			countDownLatch.countDown();
+			showChooseDialog();
+		});
+		new Thread(loadInstance).start();
+		new LoadingScreenStage(this, countDownLatch).showAndWait();
+		
 	}
 
 	/**
@@ -148,22 +118,36 @@ public class MainApp extends Application {
 	 * ask the user to map his keys
 	 */
 	private void createNewInstance() {
-		QuestionFactory questionFactory = new QuestionFactory();
+		final CountDownLatch countDownLatch = new CountDownLatch(1);
+		Task<Void> loadQuestions = loadQuestions();
+		loadQuestions.setOnSucceeded((arg0) -> {
+			countDownLatch.countDown();
+			showKeyBindingDialog();
+		});
+		new Thread(loadQuestions).start();
+		new LoadingScreenStage(this, countDownLatch).showAndWait();		
+
+	}
+	
+	private void showKeyBindingDialog() {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
-		Platform.runLater(new LoadingScreen(this, countDownLatch));
-		String filepathQuestions = "resources/questions.ser";
-		instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
-		countDownLatch.countDown();
-		countDownLatch = new CountDownLatch(1);
-		Platform.runLater(new KeyBindingDialog(this).withCountdown(countDownLatch));
+		new KeyBindingStage(this).withCountdown(countDownLatch).showAndWait();
 		try {
 			countDownLatch.await();
+			showChooseDialog();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			this.close();
 		}
 	}
-
+	
+	private void showChooseDialog() {
+		int total = instance.getQuestionsCount();
+		progress.set((double) classifiedQuestionsCount / total);// How to set the progress
+		ArrayList<Question> questions = new ArrayList<Question>(instance.getQuestions().values());
+		new ChooseClassStage(this,questions).showAndWait();
+	}
+	
 	/**
 	 * Update the progress with the increment, the progressBar and classData will be
 	 * update
@@ -297,7 +281,7 @@ public class MainApp extends Application {
 	 * This function display a window with the classes mapping
 	 */
 	public void displayMapping() {
-		new MappingDialog(this).show();
+		MappingStage.showMapping(this);
 	}
 
 	/**
@@ -330,7 +314,35 @@ public class MainApp extends Application {
 			getAchievementManager().displayAchievement(EnumAchievements.ACH_ONE_MORE);
 		}
 	}
-
+	
+	private Task<Void> loadQuestions(){
+		return new Task<Void>() {
+	        @Override
+	        protected Void call() {
+	        	QuestionFactory questionFactory = new QuestionFactory();
+				String filepathQuestions = "resources/questions.ser";
+				instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
+				return null;
+	        }
+	    };
+	}
+	
+	private Task<Void> loadInstance(String filepath){
+		return new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				instance = instance.loadInstance(filepath);
+				classData.setAll(getKeyMapping().values());
+				mappingData.setAll(getKeyMapping().entrySet());
+				for (Question question : instance.getQuestions().values()) {
+					if (question.isClassified()) {
+						classifiedQuestionsCount++;
+					}
+				}
+				return null;
+			}
+		};
+	}
 	/**
 	 * Launch the application
 	 * 
