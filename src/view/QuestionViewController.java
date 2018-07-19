@@ -26,6 +26,7 @@ public class QuestionViewController {
 	public void setQuestion(Question question){
 		this.question = question;
 		this.title.setText(question.getTitle());
+		this.body.getEngine().setUserStyleSheetLocation(getClass().getResource("/view/resources/style.css").toString());
 		this.body.getEngine().loadContent(question.getBody());
 		if(question.isClassified()) {
 			this.title.setStyle(this.title.getStyle()+"-fx-text-fill: #64DD17;");

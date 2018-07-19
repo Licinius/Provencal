@@ -16,6 +16,7 @@ public enum EnumAchievements {
 	public String getImagePath() {
 		return getClass().getResource(this.imagePath).toString();
 	}
+	@Override
 	public String toString() {
 		return this.message;
 	}
