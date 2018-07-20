@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -122,6 +123,9 @@ public class MainApp extends Application {
 		mappingData.setAll(instance.keyMapping.entrySet());
 	}
 	
+	public HashSet<String> getKeywords(){
+		return instance.getKeywords();
+	}
 	/**
 	 * Initializes the root layout.
 	 */
@@ -325,6 +329,9 @@ public class MainApp extends Application {
 	        	QuestionFactory questionFactory = new QuestionFactory();
 				String filepathQuestions = "resources/questions.ser";
 				instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
+				String filepathKeywords = "resources/keywords.ser";
+				String[] keywords = instance.generateKeywords(filepathKeywords);
+				instance.setKeywords(keywords);
 				return null;
 	        }
 	    };

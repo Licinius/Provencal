@@ -58,7 +58,7 @@ public class ChooseClassDialogController {
 		loader.setLocation(getClass().getResource("/view/QuestionView.fxml"));
 		GridPane pane = loader.load();
 		QuestionViewController controller = loader.getController();
-		controller.setQuestion(question);
+		controller.setQuestion(question,mainApp.getKeywords());
 		return pane;
 	}
 	

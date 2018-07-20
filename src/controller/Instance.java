@@ -1,12 +1,15 @@
 package controller;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import achievement.AchievementManager;
 import javafx.scene.input.KeyCode;
@@ -21,11 +24,13 @@ public class Instance implements Serializable{
 		public HashMap<KeyCode,Class> keyMapping;
     	private HashMap<Integer,Question> questions;
     	private AchievementManager achievementManager;
+    	private HashSet<String> keywords;
     	
     	public Instance() {
     		keyMapping = new HashMap<KeyCode,Class>();
     		questions = new HashMap<Integer,Question>();
     		achievementManager = new AchievementManager();
+    		keywords = new HashSet<>();
     	}
     	public void setQuestions(HashMap<Integer,Question> questions) {
     		this.questions = questions;
@@ -33,11 +38,19 @@ public class Instance implements Serializable{
     	public int getQuestionsCount() {
     		return this.questions.size();
     	}
+    	public HashSet<String> getKeywords(){
+    		return keywords;
+    	}
     	public AchievementManager getAchievementManager() {
     		return achievementManager;
     	}
     	public HashMap<Integer,Question> getQuestions() {
     		return this.questions;
+    	}
+    	public void setKeywords(String[] keywords) {
+    		for(String keyword : keywords) {
+    			this.keywords.add(keyword);
+    		}
     	}
 		public void saveInstance(String filepath) {
     		FileOutputStream fileOutputStream;
@@ -59,5 +72,20 @@ public class Instance implements Serializable{
 			instance = (Instance) objectInputStream.readObject();
 			objectInputStream.close();
 			return instance;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public String[] generateKeywords(String filepath)  {
+			String[] keywords = null;
+			try {
+				InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+				ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream);
+				keywords = ((String[]) objectInputStream.readObject());
+				objectInputStream.close();
+			} catch (IOException | ClassNotFoundException  e) {
+    			e.printStackTrace();
+    		}
+			return keywords;
 		}
     }
