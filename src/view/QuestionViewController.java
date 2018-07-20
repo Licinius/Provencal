@@ -2,11 +2,17 @@ package view;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -82,7 +88,21 @@ public class QuestionViewController {
 				NodeList children = node.getChildNodes();
 				int size = children.getLength();
 				for(int i = 0; i<size;i++) {
-					newElement.appendChild(formatElement(children.item(i),doc));
+					if(children.item(i).getNodeType() == Node.ELEMENT_NODE)
+						newElement.appendChild(formatElement(children.item(i),doc));
+					else {
+						for(String s : children.item(i).getTextContent().split("((?<=[^A-z0-9])|(?=[^A-z0-9]))")) {
+							Node text = doc.createTextNode(s);
+							if(keywords.contains(s)) {
+								Element span = doc.createElement("span");
+								span.setAttribute("class", "highlight");
+								span.appendChild(text);
+								newElement.appendChild(span);
+							}else {
+								newElement.appendChild(text);
+							}
+						}
+					}
 				}
 				return newElement;
 			}
@@ -93,9 +113,15 @@ public class QuestionViewController {
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 				InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
 				Document doc = docBuilder.parse(inputStream);
-				
-				System.out.println(formatElement(doc.getFirstChild(), doc));
-				return "";
+				Node n = doc.getFirstChild();
+				n = formatElement(doc.getFirstChild(), doc);
+				StringWriter sw = new StringWriter();
+				TransformerFactory tf = TransformerFactory.newInstance();
+		        Transformer transformer = tf.newTransformer();
+		        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+
+		        transformer.transform(new DOMSource(n), new StreamResult(sw));
+		        return sw.toString();
 			}		
 		};
 		
