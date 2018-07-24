@@ -19,12 +19,20 @@ public class Classes implements Serializable,Collection<Class>{
 	 * The generated serialUID
 	 */
 	private static final long serialVersionUID = 1276237082847124105L;
-	HashSet<Class> classes;
+	private HashSet<Class> classes;
 	
 	public Classes() {
 		classes = new HashSet<Class>();
 	}
-	
+
+	/**
+	 * Constructor to initialize the classes with a already create ArrayList of classes
+	 * @param classes, a ArrayList of Class
+	 */
+	public Classes(Collection<Class> classes) {
+		this.classes = new HashSet<Class>();
+		this.classes.addAll(classes);
+	}
 	/**
 	 * This function allows to save easily the classes
 	 * @param filepath the name of the file where to save the Classes
@@ -57,14 +65,7 @@ public class Classes implements Serializable,Collection<Class>{
 		objectInputStream.close();
 		return classes;
 	}
-	
-	/**
-	 * Constructor to initialize the classes with a already create ArrayList of classes
-	 * @param classes, a ArrayList of Class
-	 */
-	public Classes(HashSet<Class> classes) {
-		this.classes = classes;
-	}
+
 	
 	/**
 	 * Fired to get the arrayList of classes
@@ -84,32 +85,8 @@ public class Classes implements Serializable,Collection<Class>{
 		}
 		return (double)questionsCount/classes.size();
 	}
-	/**
-	 * This function is called to know the average of keywords in the classes
-	 * @return a double that is the average of questions in the classes
-	 */
-	public double getAverageKeywords() {
-		int keywordsCount = 0;
-		for(Class aClass : classes) {
-			keywordsCount += aClass.getKeywords().size();
-		}
-		return (double)keywordsCount/classes.size();
-	}
-	/**
-	 * This function is called to get the class with the maximum number of keywords
-	 * @return a class with the largest number of keyword, if there is no class return null
-	 */
-	public Class getClassWithMaximumKeyword() {
-		int maximumKeywords = 0;
-		Class res = null;
-		for(Class aClass : classes) {
-			if(aClass.getKeywords().size()>maximumKeywords) {
-				maximumKeywords = aClass.getKeywords().size();
-				res = aClass;
-			}
-		}
-		return res;
-	}
+	
+	
 	
 	@Override
 	public Iterator<Class> iterator() {

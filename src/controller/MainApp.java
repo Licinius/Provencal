@@ -30,11 +30,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Class;
+import model.Classes;
 import model.Question;
 import stage.ChooseClassStage;
 import stage.KeyBindingStage;
 import stage.LoadingScreenStage;
 import stage.MappingStage;
+import stage.StatisticStage;
 import view.AlertException;
 import view.ListOverviewController;
 
@@ -108,6 +110,9 @@ public class MainApp extends Application {
 		return instance.keyMapping;
 	}
 	
+	public Classes getClasses() {
+		return new Classes(instance.keyMapping.values());
+	}
 	/**
 	 * @return the achievement manager of the instance
 	 */
@@ -252,6 +257,13 @@ public class MainApp extends Application {
 	 */
 	public void displayMapping() {
 		MappingStage.showMapping(this);
+	}
+	
+	/**
+	 * This function display a window with the statistic 
+	 */
+	public void displayStatistic() {
+		new StatisticStage(this).show();
 	}
 	
 	/**

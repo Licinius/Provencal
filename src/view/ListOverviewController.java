@@ -78,6 +78,14 @@ public class ListOverviewController {
 	private void displayMapping() {
 		mainApp.displayMapping();
 	}
+	
+	/**
+	 * Show the statistic view
+	 */
+	@FXML
+	private void displayStatistic() {
+		mainApp.displayStatistic();
+	}
 	/**
 	 * Allow to create a new class
 	 */
