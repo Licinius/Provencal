@@ -1,8 +1,13 @@
 package view;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +27,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXToggleButton;
+
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -38,16 +46,54 @@ public class QuestionViewController {
 	private WebView body;
 	@FXML
 	private Label classes;
-	private Question question;
+	@FXML
+	private JFXTextField keywordField;
+	@FXML
+	private JFXToggleButton toggleHighlight;
 	
+	private static final StringWriter scriptjs = new StringWriter();
+	private Question question;
+	private HashSet<String> keywords;
+	private boolean highlight;
+	
+	/**
+	 * This function initialize the static attribute scriptjs if it's not already initialize
+	 * Then it adds the listener on the text selection
+	 */
+	public void initialize() {
+		if(scriptjs.toString().isEmpty()) {
+			InputStream scriptInputStream = getClass().getClassLoader().getResourceAsStream("view/resources/script.js");
+			String line = null;
+			try {
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(scriptInputStream);
+				InputStreamReader inputStreamReader = new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8);
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				while((line = bufferedReader.readLine()) != null) {
+					scriptjs.append(line+"\n");//Add end of line not read 
+	            }
+	            bufferedReader.close(); 
+			} catch (IOException e) {
+				new AlertException(e).showAlert();
+			}	
+		}
+		this.body.setOnMouseReleased(arg0->{
+            Object selection = this.body.getEngine().executeScript(scriptjs.toString());
+            if (selection instanceof String) {
+            	keywordField.setText(((String) selection).trim());
+            }
+		});
+		
+	}
 	/**
 	 * Set the information of a question in the view
 	 * @param question The question to set
 	 */
-	public void setQuestion(Question question, HashSet<String> keywords){
+	public void setQuestion(Question question, HashSet<String> keywords,boolean highlight){
+		this.keywords = keywords;
 		this.question = question;
+		this.highlight = highlight;
 		this.title.setText(question.getTitle());
-		this.body.getEngine().setUserStyleSheetLocation(getClass().getResource("/view/resources/style.css").toString());
+		this.body.getEngine().setUserStyleSheetLocation(getClass().getClassLoader().getResource("view/resources/style.css").toExternalForm());
 		this.body.getEngine().loadContent(question.getBody());
 		if(question.isClassified()) {
 			this.title.setStyle(this.title.getStyle()+"-fx-text-fill: #64DD17;");
@@ -55,11 +101,15 @@ public class QuestionViewController {
 		String classesName = question.getClasses().stream().map(p -> p.getName())
                 .collect(Collectors.joining(", "));
 		this.classes.setText(classesName);
-		Task<String> highlightWords = fastHighlightWords(keywords);
-		highlightWords.setOnSucceeded(arg0 -> {
-			this.body.getEngine().loadContent(highlightWords.getValue());
-		});
-		new Thread(highlightWords).start();
+		if(highlight) {
+			//HighLight keyword
+			Task<String> highlightWords = highlightWord(keywords);
+			highlightWords.setOnSucceeded(arg0 -> {
+				this.body.getEngine().loadContent(highlightWords.getValue());
+			});
+			new Thread(highlightWords).start();
+		}
+		toggleHighlight.setSelected(highlight);
 	}
 	
 	/**
@@ -69,8 +119,46 @@ public class QuestionViewController {
 	public Question getQuestion() {
 		return this.question;
 	}
+	/**
+	 * 
+	 * @return True if the toggle is armed
+	 */
+	public boolean getStateToggleHighLight() {
+		return this.highlight;
+	}
+	/**
+	 * handle the highlight of the keywords
+	 */
+	@FXML
+	public void handleHighlightKeywords() {
+		if(!this.highlight) {
+			this.highlight = true;
+			//HighLight keyword
+			Task<String> highlightWords = highlightWord(keywords);
+			highlightWords.setOnSucceeded(arg0 -> {
+				this.body.getEngine().loadContent(highlightWords.getValue());
+			});
+			new Thread(highlightWords).start();
+		}else {
+			this.highlight = false;
+			this.body.getEngine().loadContent(question.getBody());
+		}
+	}
+	/**
+	 * Add the keyword to the hashSet then update the content
+	 */
+	@FXML
+	public void addKeyword() {
+		this.keywords.add(this.keywordField.getText());
+		Task<String> highlightWords = highlightWord(keywords);
+		highlightWords.setOnSucceeded(arg0 -> {
+			this.body.getEngine().loadContent(highlightWords.getValue());
+		});
+		new Thread(highlightWords).start();
+		toggleHighlight.setSelected(true);
+	}
 	
-	private Task<String> fastHighlightWords(HashSet<String> keywords){
+	private Task<String> highlightWord(HashSet<String> keywords){
 		return new Task<String>() {
 			
 			private Node formatElement(Node node, Document doc) {
@@ -103,7 +191,11 @@ public class QuestionViewController {
 										//Create the tag
 										text.setTextContent(word);
 										Element span = doc.createElement("span");
-										span.setAttribute("class", "highlight");
+										if(sizeMultiword>1)
+											span.setAttribute("class", "highlight-n");
+										else {
+											span.setAttribute("class", "highlight");	
+										}
 										span.appendChild(text);
 										newElement.appendChild(span);
 									}else {
@@ -136,9 +228,10 @@ public class QuestionViewController {
 				int index;
 				boolean found; //default true and false if the splitkeyword does not match the text
 				for(String keyword : potentialKeywords) {
+					splitKeyword.clear();
 					index = 1;
 					found = true;
-					for(String s : keyword.split(" ")) {
+					for(String s : keyword.split("((?<=[ ])|(?=[ ]))")) {
 						splitKeyword.add(s);
 					}
 					Iterator<String> splitwordIterator = splitKeyword.iterator();
@@ -160,7 +253,6 @@ public class QuestionViewController {
 			
 			@Override
 			protected String call() throws Exception {
-				
 				String xml = "<body>" + question.getBody() + "</body>";
 				xml = xml.replaceAll("<br>", "<br/>");//Some question have br or hr not closed
 				xml = xml.replaceAll("<hr>", "<hr/>");

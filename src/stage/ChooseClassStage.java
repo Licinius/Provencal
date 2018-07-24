@@ -35,7 +35,10 @@ public class ChooseClassStage extends Stage{
 	        controller.initDialog(mainApp,questions);
 	        
 	        // Create the dialog Stage.
-	        this.setOnCloseRequest(e -> e.consume());
+	        this.setOnCloseRequest(e ->{
+	        	e.consume();
+	        	mainApp.showExitAlert(e);
+	        });
 	        this.setTitle("Question in class");
 	        this.getIcons().add(new Image(MainApp.class.getResourceAsStream("/view/resources/images/icon.png")));
 	        this.initOwner(mainApp.getPrimaryStage());

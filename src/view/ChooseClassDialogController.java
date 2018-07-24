@@ -25,7 +25,7 @@ public class ChooseClassDialogController {
 	private BorderPane pane;
 	
 	private GridPane questionPane;
-	
+	private QuestionViewController controllerPane;
 	private MainApp mainApp;
 	private Question currentQuestion;
 	private ArrayList<Question> questions;
@@ -53,12 +53,12 @@ public class ChooseClassDialogController {
 	 * @return The AnchorPane to attach to the GridPane
 	 * @throws IOException
 	 */
-	private GridPane getQuestionPane(Question question) throws IOException {
+	private GridPane getQuestionPane(Question question,boolean highlight) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/QuestionView.fxml"));
 		GridPane pane = loader.load();
-		QuestionViewController controller = loader.getController();
-		controller.setQuestion(question,mainApp.getKeywords());
+		controllerPane = loader.getController();
+		controllerPane.setQuestion(question,mainApp.getKeywords(),highlight);
 		return pane;
 	}
 	
@@ -131,9 +131,10 @@ public class ChooseClassDialogController {
 	public void updateView() {
 		potentialClasses.clear();
 		pane.getChildren().remove(questionPane);
+		boolean previousToggleState = (controllerPane != null?controllerPane.getStateToggleHighLight():true);
 		potentialClasses.addAll(currentQuestion.getClasses());
 		try {
-			questionPane = getQuestionPane(currentQuestion);
+			questionPane = getQuestionPane(currentQuestion,previousToggleState);
 		} catch (IOException e) {
 			new AlertException(e).showAlert();
 		}

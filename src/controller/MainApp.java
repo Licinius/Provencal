@@ -296,7 +296,7 @@ public class MainApp extends Application {
 	 * @param event
 	 *   A WindowEvent to consume
 	 */
-	private void showExitAlert(WindowEvent event) {
+	public void showExitAlert(WindowEvent event) {
 		event.consume();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		((Stage) alert.getDialogPane().getScene().getWindow()).getIcons()
