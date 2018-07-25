@@ -1,4 +1,7 @@
 /view/
+/achievement/
+/resources/
+/controller/
+/factory/
 /model/
 /stage/
-/controller/

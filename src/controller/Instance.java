@@ -25,7 +25,9 @@ public class Instance implements Serializable{
     	private HashMap<Integer,Question> questions;
     	private AchievementManager achievementManager;
     	private HashSet<String> keywords;
-    	
+    	/**
+    	 * Initialize collections, and the AchievementManager 
+    	 */
     	public Instance() {
     		keyMapping = new HashMap<KeyCode,Class>();
     		questions = new HashMap<Integer,Question>();

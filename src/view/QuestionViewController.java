@@ -2,7 +2,6 @@ package view;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,21 +10,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.Parser;
 
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
@@ -161,60 +155,6 @@ public class QuestionViewController {
 	private Task<String> highlightWord(HashSet<String> keywords){
 		return new Task<String>() {
 			
-			private Node formatElement(Node node, Document doc) {
-				Element newElement = doc.createElement(node.getNodeName());
-				NodeList children = node.getChildNodes();
-				int size = children.getLength();
-				ArrayList<String> potentialKeywords = new ArrayList<String>();
-				Pattern wordPattern;
-				int wordIndex = 0;
-				for(int indexChildren = 0; indexChildren<size;indexChildren++) {
-					if(children.item(indexChildren).getNodeType() == Node.ELEMENT_NODE)
-						newElement.appendChild(formatElement(children.item(indexChildren),doc));
-					else {
-						String[] words = children.item(indexChildren).getTextContent().split("((?<=[^A-z0-9-])|(?=[^A-z0-9-]))");
-						while(wordIndex<words.length) {
-							potentialKeywords.clear();
-							String word = words[wordIndex];
-							Node text = doc.createTextNode(word);
-							if(!word.trim().isEmpty()) {
-								wordPattern = Pattern.compile("^(?i)\\b" + Pattern.quote(word) + "\\b.*");
-								for(String keyword : keywords) {
-									if(wordPattern.matcher(keyword).matches())
-										potentialKeywords.add(keyword);	
-								}
-								if(!potentialKeywords.isEmpty()) {
-									int sizeMultiword = getSizeMultiword(words,wordIndex,potentialKeywords);
-									if(sizeMultiword>0){
-										for(int i = 1; i<sizeMultiword; i++) 
-											word+=words[++wordIndex];
-										//Create the tag
-										text.setTextContent(word);
-										Element span = doc.createElement("span");
-										if(sizeMultiword>1)
-											span.setAttribute("class", "highlight-n");
-										else {
-											span.setAttribute("class", "highlight");	
-										}
-										span.appendChild(text);
-										newElement.appendChild(span);
-									}else {
-										newElement.appendChild(text);
-									}
-									
-								}else {
-									newElement.appendChild(text);
-								}
-							}else {
-								newElement.appendChild(text);
-							}
-							wordIndex++;
-						}
-					}
-				}
-				return newElement;
-			}
-			
 			/**
 			 * Check if there is a multiword in the words for the word words[wordIndex].
 			 * @param words A Array of string
@@ -250,27 +190,67 @@ public class QuestionViewController {
 				}
 				return sizeMax;
 			}
-			
+			private Element formatElement(Element element) {
+				Element newElement = new Element(element.nodeName());
+				List<Node> children = element.childNodes();
+				ArrayList<String> potentialKeywords = new ArrayList<String>();
+				Pattern wordPattern;
+				int wordIndex = 0;
+				for(Node n : children) {
+					if(!n.nodeName().equals("#text")) {
+						newElement.appendChild(formatElement((Element) n));
+					}
+					else {
+						String[] words = n.toString().split("((?<=[^A-z0-9-])|(?=[^A-z0-9-]))");
+						while(wordIndex<words.length) {
+							potentialKeywords.clear();
+							String word = words[wordIndex];
+							TextNode text = new TextNode(word);
+							if(!word.trim().isEmpty()) {
+								wordPattern = Pattern.compile("^(?i)\\b" + Pattern.quote(word) + "\\b.*");
+								for(String keyword : keywords) {
+									if(wordPattern.matcher(keyword).matches())
+										potentialKeywords.add(keyword);	
+								}
+								if(!potentialKeywords.isEmpty()) {
+									int sizeMultiword = getSizeMultiword(words,wordIndex,potentialKeywords);
+									if(sizeMultiword>0){
+										for(int i = 1; i<sizeMultiword; i++) 
+											word+=words[++wordIndex];
+										//Create the tag
+										text.text(word);
+										Element span = new Element("span");
+										if(sizeMultiword>1)
+											span.attr("class", "highlight-n");
+										else {
+											span.attr("class", "highlight");	
+										}
+										span.appendChild(text);
+										newElement.appendChild(span);
+									}else {
+										newElement.appendChild(text);
+									}
+									
+								}else {
+									newElement.appendChild(text);
+								}
+							}else {
+								newElement.appendChild(text);
+							}
+							wordIndex++;
+						}
+					}
+				}
+				return newElement;
+			}
 			@Override
 			protected String call() throws Exception {
 				String xml = "<body>" + question.getBody() + "</body>";
-				xml = xml.replaceAll("<br>", "<br/>");//Some question have br or hr not closed
-				xml = xml.replaceAll("<hr>", "<hr/>");
-				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-				InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-				Document doc = docBuilder.parse(inputStream);
-				Node n = doc.getFirstChild();
-				n = formatElement(n, doc);
-				StringWriter sw = new StringWriter();
-				TransformerFactory tf = TransformerFactory.newInstance();
-		        Transformer transformer = tf.newTransformer();
-		        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-		        transformer.transform(new DOMSource(n), new StreamResult(sw));
-		        return sw.toString();
+				Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
+				Element body = doc.select("body").get(0);				
+		        return formatElement(body).toString();
 			}		
 		};
-		
 	}
 	
 }
