@@ -80,7 +80,6 @@ public class Instance implements Serializable{
 			return instance;
 		}
 		
-		@SuppressWarnings("unchecked")
 		public String[] generateKeywords(String filepath)  {
 			String[] keywords = null;
 			try {

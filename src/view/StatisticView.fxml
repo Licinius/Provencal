@@ -20,12 +20,12 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints fillHeight="false" minHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints fillHeight="false" minHeight="10.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="  Question with one class (%)" wrapText="true" />
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="  Average classes/question  " GridPane.rowIndex="1" />
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="  Average questions/classes" GridPane.rowIndex="1" />
             <Label fx:id="percentageQuestion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" />
@@ -49,8 +49,7 @@
    <bottom>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="  Distribution classes :" />
-            <BarChart fx:id="barChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <BarChart fx:id="barChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Distribution classes">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>

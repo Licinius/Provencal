@@ -18,7 +18,7 @@ public class StatisticStage extends Stage{
 	        loader.setLocation(getClass().getResource("/view/StatisticView.fxml"));
 	        BorderPane page = (BorderPane) loader.load();
 	        StatisticViewController controller = loader.getController();
-		    controller.setClasses(mainApp.getClasses());
+		    controller.setClasses(mainApp);
 	        // Create the dialog Stage.
 	        this.getIcons().add(new Image(getClass().getResourceAsStream("/view/resources/images/icon.png")));
 	        this.initOwner(mainApp.getPrimaryStage());
