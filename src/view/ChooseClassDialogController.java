@@ -58,7 +58,7 @@ public class ChooseClassDialogController {
 		loader.setLocation(getClass().getResource("/view/QuestionView.fxml"));
 		GridPane pane = loader.load();
 		controllerPane = loader.getController();
-		controllerPane.setQuestion(question,mainApp.getKeywords(),highlight);
+		controllerPane.setQuestion(question,mainApp.getInstance().getKeywords(),highlight);
 		return pane;
 	}
 	
@@ -149,8 +149,8 @@ public class ChooseClassDialogController {
 
 		@Override
 		public void handle(KeyEvent arg0) {
-			if(mainApp.getKeyMapping().containsKey(arg0.getCode())) {
-				Class choosenClass = mainApp.getKeyMapping().get(arg0.getCode());
+			if(mainApp.getInstance().getKeyMapping().containsKey(arg0.getCode())) {
+				Class choosenClass = mainApp.getInstance().getKeyMapping().get(arg0.getCode());
 				if(potentialClasses.contains(choosenClass)) {
 					potentialClasses.remove(choosenClass);
 				}else {
@@ -216,7 +216,7 @@ public class ChooseClassDialogController {
 							if(questionToDisplay==currentQuestion) {
 								questionToDisplay = previousUnclassifiedQuestion();
 								if(questionToDisplay == currentQuestion) {
-									mainApp.getAchievementManager().displayAchievement(EnumAchievements.ACH_FINISH_CLASS);
+									mainApp.getInstance().getAchievementManager().displayAchievement(EnumAchievements.ACH_FINISH_CLASS);
 								}
 							}
 							currentQuestion=questionToDisplay;
@@ -225,8 +225,8 @@ public class ChooseClassDialogController {
 					}
 					break;
 				default:
-					if(!mainApp.getKeyMapping().containsKey(arg0.getCode()))
-							mainApp.getAchievementManager().displayAchievement(EnumAchievements.ACH_WHAT_DOES_THIS_BUTTON_DO);
+					if(!mainApp.getInstance().getKeyMapping().containsKey(arg0.getCode()))
+							mainApp.getInstance().getAchievementManager().displayAchievement(EnumAchievements.ACH_WHAT_DOES_THIS_BUTTON_DO);
 					break;
 			}
 		}

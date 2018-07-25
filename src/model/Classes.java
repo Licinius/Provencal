@@ -86,7 +86,19 @@ public class Classes implements Serializable,Collection<Class>{
 		return (double)questionsCount/classes.size();
 	}
 	
-	
+	/**
+	 * This function is called to know how many distinct questions there is in the classes
+	 * @return an int that is the number of question with one class
+	 */
+	public int getQuestionsWithOneClassCount() {
+		HashSet<Integer> questionsWithOneClass = new HashSet<>();
+		for(Class c : this) {
+			for(Question q : c.getQuestions()) {
+				questionsWithOneClass.add(q.getId());
+			}
+		}
+		return questionsWithOneClass.size();
+	}
 	
 	@Override
 	public Iterator<Class> iterator() {

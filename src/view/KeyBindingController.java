@@ -66,7 +66,7 @@ public class KeyBindingController {
 		int index = 0;
 		int keyCodeCount = 0;
 		//The mapping will be update if not empty
-		HashMap<KeyCode,Class> keyMapping = mainApp.getKeyMapping();
+		HashMap<KeyCode,Class> keyMapping = mainApp.getInstance().getKeyMapping();
 		for(KeyBindingField keyBindingField : keyBindingFields) {
 			if(keyBindingField.getCode() != null) {
 				if(!keyMapping.containsKey(keyBindingField.getCode())){
@@ -112,9 +112,9 @@ public class KeyBindingController {
 	 * The rows are disable and not add to the arrayList of TextField and KeyBindingField
 	 */
 	private void recreateRows() {
-		for(KeyCode keycode : mainApp.getKeyMapping().keySet()) {
+		for(KeyCode keycode : mainApp.getInstance().getKeyMapping().keySet()) {
 			validated = true;
-			Class aClass = mainApp.getKeyMapping().get(keycode);
+			Class aClass = mainApp.getInstance().getKeyMapping().get(keycode);
 			TextField classNameField = new TextField(aClass.getName());
 			classNameField.setDisable(true);
 			KeyBindingField keyBindingField = new KeyBindingField(keycode);

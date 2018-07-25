@@ -21,7 +21,7 @@ public class Instance implements Serializable{
 		 * Generated serialVersionUID
 		 */
 		private static final long serialVersionUID = 5428177751212085034L;
-		public HashMap<KeyCode,Class> keyMapping;
+		private HashMap<KeyCode,Class> keyMapping;
     	private HashMap<Integer,Question> questions;
     	private AchievementManager achievementManager;
     	private HashSet<String> keywords;
@@ -46,6 +46,12 @@ public class Instance implements Serializable{
     	}
     	public HashMap<Integer,Question> getQuestions() {
     		return this.questions;
+    	}
+    	public HashMap<KeyCode,Class> getKeyMapping(){
+    		return keyMapping;
+    	}
+    	public void setKeyMapping(HashMap<KeyCode,Class> keyMapping) {
+    		this.keyMapping = keyMapping;
     	}
     	public void setKeywords(String[] keywords) {
     		for(String keyword : keywords) {

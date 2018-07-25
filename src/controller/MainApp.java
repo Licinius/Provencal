@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
-import achievement.AchievementManager;
 import achievement.EnumAchievements;
 import factory.QuestionFactory;
 import javafx.application.Application;
@@ -102,35 +100,23 @@ public class MainApp extends Application {
 	public DoubleProperty getProgressProperty() {
 		return progress;
 	}
-
-	/**
-	 * @return the keyMapping of the instance
-	 */
-	public HashMap<KeyCode, Class> getKeyMapping() {
-		return instance.keyMapping;
-	}
 	
 	public Classes getClasses() {
-		return new Classes(instance.keyMapping.values());
+		return new Classes(instance.getKeyMapping().values());
 	}
-	/**
-	 * @return the achievement manager of the instance
-	 */
-	public AchievementManager getAchievementManager() {
-		return instance.getAchievementManager();
-	}
+
 	
+	public Instance getInstance() {
+		return instance;
+	}
 	/**
 	 * @param keyMapping the keyMapping to sets (HashMap<KeyCode,Class)
 	 */
 	public void setKeyMapping(HashMap<KeyCode, Class> keyMapping) {
-		instance.keyMapping = keyMapping;
-		mappingData.setAll(instance.keyMapping.entrySet());
+		instance.setKeyMapping(keyMapping);
+		mappingData.setAll(instance.getKeyMapping().entrySet());
 	}
 	
-	public HashSet<String> getKeywords(){
-		return instance.getKeywords();
-	}
 	/**
 	 * Initializes the root layout.
 	 */
@@ -224,9 +210,9 @@ public class MainApp extends Application {
 		classifiedQuestionsCount += increment;
 		double newProgress = (double) classifiedQuestionsCount / instance.getQuestionsCount();
 		if(newProgress>0.5)
-			getAchievementManager().displayAchievement(EnumAchievements.ACH_MID_CLASS);
+			instance.getAchievementManager().displayAchievement(EnumAchievements.ACH_MID_CLASS);
 		this.progress.set(newProgress);
-		classData.setAll(getKeyMapping().values());
+		classData.setAll(instance.getKeyMapping().values());
 	}
 
 
@@ -327,7 +313,7 @@ public class MainApp extends Application {
 		} else if (result.get() == exitButton) {
 			close();
 		}else {
-			getAchievementManager().displayAchievement(EnumAchievements.ACH_ONE_MORE);
+			instance.getAchievementManager().displayAchievement(EnumAchievements.ACH_ONE_MORE);
 		}
 	}
 	
@@ -359,8 +345,8 @@ public class MainApp extends Application {
 			@Override
 			protected Void call() throws Exception {
 				instance = instance.loadInstance(filepath);
-				classData.setAll(getKeyMapping().values());
-				mappingData.setAll(getKeyMapping().entrySet());
+				classData.setAll(instance.getKeyMapping().values());
+				mappingData.setAll(instance.getKeyMapping().entrySet());
 				for (Question question : instance.getQuestions().values()) {
 					if (question.isClassified()) {
 						classifiedQuestionsCount++;
