@@ -68,9 +68,9 @@ public class ChooseClassDialogController {
 	 * @param questions
 	 * @throws IOException
 	 */
-	public void initDialog(MainApp mainApp, ArrayList<Question> questions) throws IOException {
+	public void initDialog(MainApp mainApp) throws IOException {
 		this.mainApp = mainApp;
-		this.questions = questions;
+		this.questions = new ArrayList<>(mainApp.getInstance().getQuestions().values());
 		currentQuestion = nextUnclassifiedQuestion();
 		if(currentQuestion == null)
 			currentQuestion = questions.get(0);

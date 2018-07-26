@@ -2,7 +2,6 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -101,11 +100,18 @@ public class MainApp extends Application {
 		return progress;
 	}
 	
+	/**
+	 * 
+	 * @return The classes of the applications
+	 */
 	public Classes getClasses() {
 		return new Classes(instance.getKeyMapping().values());
 	}
 
-	
+	/**
+	 * 
+	 * @return the instance of the application
+	 */
 	public Instance getInstance() {
 		return instance;
 	}
@@ -195,8 +201,7 @@ public class MainApp extends Application {
 	private void showChooseClass() {
 		int total = instance.getQuestionsCount();
 		progress.set((double) classifiedQuestionsCount / total);// How to set the progress
-		ArrayList<Question> questions = new ArrayList<Question>(instance.getQuestions().values());
-		new ChooseClassStage(this,questions).showAndWait();
+		new ChooseClassStage(this).showAndWait();
 	}
 	
 	/**

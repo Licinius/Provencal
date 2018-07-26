@@ -2,6 +2,13 @@ package model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+
+
+/**
+ * This abstract class can represent a post on StackOverflow (Questions &amp; Answer)
+ * @author Crauser
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class Post implements Serializable {
 	
@@ -19,7 +26,19 @@ public abstract class Post implements Serializable {
 	private User lastEditor;
 	
 	
-	//CONSTRUCTOR
+	/**
+	 * Create a post with all the attributes (null possible)
+	 * @param id The question id
+	 * @param creationDate the date when the answer has been created
+	 * @param deletionDate the date when the answer has been deleted, null if the answer hasn't been deleted
+	 * @param score The answer score on SO
+	 * @param body The answer body 
+	 * @param lastEditDate The last time the question has been edited
+	 * @param closedDate The date when the question has been closed (null if the answer is open)
+	 * @param communityOwnedDate The date when the answer started to belong to the community
+	 * @param owner The user that owns the answer
+	 * @param lastEditor The last editor of the answer
+	 **/
 	public Post(int id, Date creationDate, Date deletionDate, int score, String body, Date lastEditDate, Date closedDate,
 			Date communityOwnedDate, User owner, User lastEditor) {
 		super();
@@ -36,67 +55,134 @@ public abstract class Post implements Serializable {
 		this.lastEditor = lastEditor;
 	}
 	
+	/**
+	 * Empty constructor, initialize the body with a lorem ipsum and the id with a random integer
+	 */
 	public Post() {
-		this.body="Le corps d'une question, le corps d'une question peut contenir des mots clefs interréssants";
+		this.body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt "
+				+ "ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullam"
+				+ "co laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit"
+				+ " in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat"
+				+ " cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ";
 		this.id =  (int) (Math.random() * 10000 ); ;
 	}
-	//GETTER & SETTER
+	
+	/**
+	 * 
+	 * @return An integer, the id of the post
+	 */
 	public int getId() {
 		return id;
 	}
-
+	
+	/**
+	 * 
+	 * @param id, a new integer for the post
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
+	/**
+	 * 
+	 * @return the post creation date
+	 */
 	public Date getCreationDate() {
 		return creationDate;
 	}
 
+	/**
+	 * 
+	 * @param creationDate a new post creation date
+	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
-
+	
+	/**
+	 * 
+	 * @return the deletion date
+	 */
 	public Date getDeletionDate() {
 		return deletionDate;
 	}
 
+	/**
+	 * 
+	 * @param deletionDate the post deletion date
+	 */
 	public void setDeletionDate(Date deletionDate) {
 		this.deletionDate = deletionDate;
 	}
 
+	/**
+	 * 
+	 * @return the score of the post
+	 */
 	public int getScore() {
 		return score;
 	}
 
+	/**
+	 * 
+	 * @param score to sets 
+	 */
 	public void setScore(int score) {
 		this.score = score;
 	}
 
+	/**
+	 * 
+	 * @return the message of the post
+	 */
 	public String getBody() {
 		return body;
 	}
-
+	
+	/**
+	 * 
+	 * @param body a string to set the body
+	 */
 	public void setBody(String body) {
 		this.body = body;
 	}
 
+	/**
+	 * 
+	 * @return the last time the post has been edited
+	 */
 	public Date getLastEditDate() {
 		return lastEditDate;
 	}
-
+	
+	/**
+	 * 
+	 * @param lastEditDate a date of edition
+	 */
 	public void setLastEditDate(Date lastEditDate) {
 		this.lastEditDate = lastEditDate;
 	}
 
+	/**
+	 * 
+	 * @return the date when the post has been closed
+	 */
 	public Date getClosedDate() {
 		return closedDate;
 	}
 
+	/**
+	 * 
+	 * @param closedDate the date when the post closed
+	 */
 	public void setClosedDate(Date closedDate) {
 		this.closedDate = closedDate;
 	}
 
+	/**
+	 * 
+	 * @return the community owned date
+	 */
 	public Date getCommunityOwnedDate() {
 		return communityOwnedDate;
 	}
@@ -104,15 +190,27 @@ public abstract class Post implements Serializable {
 	public void setCommunityOwnedDate(Date communityOwnedDate) {
 		this.communityOwnedDate = communityOwnedDate;
 	}
-
+	
+	/**
+	 * 
+	 * @return the map of the comment
+	 */
 	public HashMap<Integer,Comment> getMapComment() {
 		return mapComment;
 	}
 
+	/**
+	 * 
+	 * @param mapComment to set the comments
+	 */
 	public void setMapComment(HashMap<Integer,Comment> mapComment) {
 		this.mapComment = mapComment;
 	}
-
+	
+	/**
+	 * 
+	 * @return the owner of the post
+	 */
 	public User getOwner() {
 		return owner;
 	}
@@ -121,6 +219,10 @@ public abstract class Post implements Serializable {
 		this.owner = owner;
 	}
 
+	/**
+	 * 
+	 * @return the last editor of the post
+	 */
 	public User getLastEditor() {
 		return lastEditor;
 	}
@@ -129,14 +231,26 @@ public abstract class Post implements Serializable {
 		this.lastEditor = lastEditor;
 	}
 
-	//FUNTION
+	/**
+	 * 
+	 * @param c a comment to add in the map of comment
+	 */
 	public void addComment(Comment c) {
 		this.mapComment.put(c.getId(), c);
 	}
 	
+	/**
+	 * 
+	 * @return the size of the comment map
+	 */
 	public int getCommentCount() {
 		return this.mapComment.size();
 	}
+	
+	/**
+	 * 
+	 * @return the url on the website stackOverflow 
+	 */
 	public String getUrl() {
 		return "https://stackoverflow.com/questions/"+id;
 	}

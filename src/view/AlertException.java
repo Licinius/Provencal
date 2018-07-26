@@ -16,6 +16,10 @@ import javafx.scene.layout.Priority;
  */
 public class AlertException extends Alert {
 
+	/**
+	 * Constructor of the exception alert
+	 * @param exception the exception to display in the alert
+	 */
 	public AlertException(Exception exception) {
 		super(AlertType.ERROR);
 		this.setTitle("Exception Dialog");
@@ -45,8 +49,9 @@ public class AlertException extends Alert {
     	// Set expandable Exception into the dialog pane.
     	this.getDialogPane().setExpandableContent(expContent);
 	}
+
 	/**
-	 * 
+	 * This function act like the showAndWait function but when the window is close, the application will close.
 	 */
 	public void showAlert() {
 		this.showAndWait();

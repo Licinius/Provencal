@@ -43,19 +43,27 @@ public class KeyBindingStage extends Stage{
 			new AlertException(e1).showAlert();
 		}
 	}
-	
+	/**
+	 *A countdown can be used to make the comportment synchronous
+	 * @param countdown the countdownLatch initialize
+	 * @return the current object
+	 */
 	public KeyBindingStage withCountdown(CountDownLatch countdown) {
 		this.countDown = countdown;
 		return this;
 	}
 
+
+	/**
+	 * Show the keybinding dialog and wait, if the keybinding is not validated then the dialog is shown again
+	 */
 	@Override
 	public void showAndWait() {
 		do {
 			super.showAndWait();
 		}while(!controller.isValidated());
 		mainApp.updateProgress(0);
-		if(countDown != null) 
+		if(countDown != null) //If a countdown has been initialized
 			countDown.countDown();
 	}
 }
