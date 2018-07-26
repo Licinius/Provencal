@@ -326,7 +326,7 @@ public class MainApp extends Application {
 	        protected Void call() {
 	        	QuestionFactory questionFactory = new QuestionFactory();
 				String filepathQuestions = "resources/questions.ser";
-				instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));
+				instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));			
 				String filepathKeywords = "resources/keywords.ser";
 				String[] keywords = instance.generateKeywords(filepathKeywords);
 				instance.setKeywords(keywords);

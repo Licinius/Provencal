@@ -34,6 +34,14 @@ public class Class implements Serializable,Collection<Question> {
 	}
 	
 	/**
+	 * This function is used by the factory {@see ListOverviewController}
+	 * @return the questions size
+	 */
+	public int getQuestionCount() {
+		return size();
+	}
+	
+	/**
 	 * 
 	 * @return the questions in the class
 	 */

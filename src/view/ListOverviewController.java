@@ -33,7 +33,7 @@ public class ListOverviewController {
 		nameClassColumn.setCellValueFactory(
                 new PropertyValueFactory<Class, String>("name"));
 		numberQuestionColumn.setCellValueFactory(
-                new PropertyValueFactory<Class, Number>("sizeQuestions"));
+                new PropertyValueFactory<Class, Number>("questionCount"));
 	}
 	/**
 	 * This function will bind the property of progress to the progress bar in the view
