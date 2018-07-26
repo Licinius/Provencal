@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
+@SuppressWarnings("serial")
 public class Registered extends User implements Serializable {
 	
 	private int id;

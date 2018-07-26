@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
+@SuppressWarnings("serial")
 public class Question extends Post implements Serializable {
-	
 	private String title;
 	private int favoriteCount;
 	private int viewCount;

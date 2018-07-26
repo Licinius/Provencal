@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-
+@SuppressWarnings("serial")
 public class Badge implements Serializable {
 	
 	private int id;

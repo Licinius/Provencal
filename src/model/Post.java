@@ -2,7 +2,7 @@ package model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-
+@SuppressWarnings("serial")
 public abstract class Post implements Serializable {
 	
 	private int id;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /**
  * Class of a questions with a name and keywords
- * @author Florent
+ * @author Dell'omo
  *
  */
 public class Class implements Serializable {

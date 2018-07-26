@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public abstract class User implements Serializable {
 	
 	private String displayName;

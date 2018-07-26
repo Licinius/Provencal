@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-
+@SuppressWarnings("serial")
 public class Answer extends Post implements Serializable {
 	
 	private int parentId;
