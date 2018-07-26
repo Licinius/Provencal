@@ -9,30 +9,32 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+
 /**
  * This class is used to get statistic of a set of Class
  * @author Dell'omo
  *
  */
+@SuppressWarnings("serial")
 public class Classes implements Serializable,Collection<Class>{
-	/**
-	 * The generated serialUID
-	 */
-	private static final long serialVersionUID = 1276237082847124105L;
+	
 	private HashSet<Class> classes;
 	
+	/**
+	 * Initialize the HashSet of class
+	 */
 	public Classes() {
 		classes = new HashSet<Class>();
 	}
 
 	/**
-	 * Constructor to initialize the classes with a already create ArrayList of classes
+	 * Constructor to initialize the classes with an already create ArrayList of classes
 	 * @param classes, a ArrayList of Class
 	 */
 	public Classes(Collection<Class> classes) {
-		this.classes = new HashSet<Class>();
-		this.classes.addAll(classes);
+		this.classes = new HashSet<Class>(classes);
 	}
+	
 	/**
 	 * This function allows to save easily the classes
 	 * @param filepath the name of the file where to save the Classes
@@ -46,7 +48,7 @@ public class Classes implements Serializable,Collection<Class>{
 	}
 	
 	/**
-	 * This static function allows the user to read a filepath that contain the classes
+	 * This static function allows the user to read a file path that contain the classes
 	 * @param filepath the name of the file where to save the Classes
 	 * @return The class read in the file or null
 	 * @throws IOException Throws a Exception if an exception is raised by the *OutputStream
@@ -74,6 +76,7 @@ public class Classes implements Serializable,Collection<Class>{
 	public HashSet<Class> getClasses() {
 		return classes;
 	}
+	
 	/**
 	 * This function is called to know the average number of questions in the classes
 	 * @return a double that is the average of questions in the classes 
@@ -81,7 +84,7 @@ public class Classes implements Serializable,Collection<Class>{
 	public double getAverageQuestions() {
 		int questionsCount = 0;
 		for(Class aClass : classes) {
-			questionsCount+=aClass.getSizeQuestions();
+			questionsCount+=aClass.size();
 		}
 		return (double)questionsCount/classes.size();
 	}

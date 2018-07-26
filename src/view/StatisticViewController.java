@@ -64,7 +64,7 @@ public class StatisticViewController {
 		//Set barChart
 		XYChart.Series<String,Integer> series = new XYChart.Series<>();
 		for(Class c : classes) {
-			series.getData().add(new XYChart.Data<String, Integer>(c.getName(), c.getSizeQuestions()));
+			series.getData().add(new XYChart.Data<String, Integer>(c.getName(), c.size()));
 		}
 		Collections.sort(series.getData(), (o1, o2) -> {//Sort the bars
 		    Number xValue1 = (Number) o1.getYValue();

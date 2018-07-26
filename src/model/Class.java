@@ -2,51 +2,108 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
- * Class of a questions with a name and keywords
+ * Class of a questions with a name and a collection of questions
  * @author Dell'omo
  *
  */
-public class Class implements Serializable {
+@SuppressWarnings("serial")
+public class Class implements Serializable,Collection<Question> {
 	
-	/**
-	 * Generated SerialVersionUID
-	 */
-	private static final long serialVersionUID = 2132483397083171462L;
 	private String  name;
 	private ArrayList<Question> questions;
 	
-	public Class(String name,ArrayList<String> keywords) {
-		this.name = name;
-		this.questions = new ArrayList<Question>();
-	}
+	/**
+	 * This constructor initialize a class with a name
+	 * @param name to sets
+	 */
 	public Class(String name) {
 		this.name = name;
 		this.questions = new ArrayList<Question>();
 	}
-	public Class() {
-		this.questions = new ArrayList<Question>();
-	}
 	
-	public void addQuestion(Question question) {
-		questions.add(question);
-	}
-	public void removeQuestion(Question question) {
-		questions.remove(question);
-	}
-
-	
-	public int getSizeQuestions() {
-		return questions.size();
-	}
-	
+	/**
+	 * 
+	 * @return the name of the class
+	 */
 	public String getName() {
 		return name;
 	}
 	
-	
+	/**
+	 * 
+	 * @return the questions in the class
+	 */
 	public ArrayList<Question> getQuestions(){
 		return questions;
+	}
+
+	@Override
+	public boolean add(Question arg0) {
+		return questions.add(arg0);
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Question> arg0) {
+		return questions.addAll(arg0);
+	}
+
+	@Override
+	public void clear() {
+		questions.clear();
+	}
+
+	@Override
+	public boolean contains(Object arg0) {
+		return questions.contains(arg0);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> arg0) {
+		return questions.containsAll(arg0);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Iterator<Question> iterator() {
+		return questions.iterator();
+	}
+
+	@Override
+	public boolean remove(Object arg0) {
+		return questions.remove(arg0);
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> arg0) {
+		return questions.removeAll(arg0);
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> arg0) {
+		return questions.retainAll(arg0);
+	}
+
+	@Override
+	public int size() {
+		return questions.size();
+	}
+
+	@Override
+	public Object[] toArray() {
+		return questions.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] arg0) {
+		return questions.toArray(arg0);
 	}
 }

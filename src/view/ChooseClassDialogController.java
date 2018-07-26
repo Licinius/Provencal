@@ -183,7 +183,7 @@ public class ChooseClassDialogController {
 						Iterator<Class> iteratorClasses = currentQuestion.getClasses().iterator();
 						while(iteratorClasses.hasNext()) {
 							Class classToRemove = iteratorClasses.next();
-							classToRemove.removeQuestion(currentQuestion);
+							classToRemove.remove(currentQuestion);
 							iteratorClasses.remove();
 						}
 						updateView();
@@ -207,7 +207,7 @@ public class ChooseClassDialogController {
 				case ENTER:
 					if(!currentQuestion.isClassified()) {
 						for(Class choosenClass : potentialClasses) {
-							choosenClass.addQuestion(currentQuestion);
+							choosenClass.add(currentQuestion);
 							currentQuestion.addClass(choosenClass);
 						}
 						Question questionToDisplay = nextUnclassifiedQuestion();
