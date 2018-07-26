@@ -11,13 +11,14 @@ import javafx.stage.Stage;
 import view.StatisticViewController;
 
 public class StatisticStage extends Stage{
+	private StatisticViewController controller;
 	public StatisticStage (MainApp mainApp) {
 		super();
 		try {
 			FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("/view/StatisticView.fxml"));
 	        BorderPane page = (BorderPane) loader.load();
-	        StatisticViewController controller = loader.getController();
+	        controller = loader.getController();
 		    controller.setClasses(mainApp);
 	        // Create the dialog Stage.
 	        this.getIcons().add(new Image(getClass().getResourceAsStream("/view/resources/images/icon.png")));
@@ -28,7 +29,11 @@ public class StatisticStage extends Stage{
 			e.printStackTrace();
 		}
 	}
-	
+	@Override
+	public void showAndWait() {
+		super.showAndWait();
+		controller.getExecutor().shutdownNow(); //Stop thread that calculate the average
+	}
 	
 
 }

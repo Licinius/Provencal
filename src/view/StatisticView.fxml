@@ -5,6 +5,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -47,7 +48,17 @@
                      </GridPane.margin>
                   </Label>
                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="  Keywords/Questions" GridPane.rowIndex="2" />
-                  <Label fx:id="keywordsQuestions" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="keywordsQuestions" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin></Label>
+                  <ProgressIndicator fx:id="progressIndicator" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets bottom="3.0" right="5.0" top="3.0" />
+                     </GridPane.margin></ProgressIndicator>
                </children>
             </GridPane>
             <BarChart fx:id="barChart" animated="false" legendSide="TOP" legendVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" title="Distribution classes">

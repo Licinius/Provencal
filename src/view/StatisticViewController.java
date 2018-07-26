@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
@@ -16,12 +19,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
 
+import achievement.EnumAchievements;
 import controller.MainApp;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import model.Class;
 import model.Classes;
 import model.Question;
@@ -33,12 +39,14 @@ public class StatisticViewController {
 	private Label averageLabel;
 	@FXML
 	private Label keywordsQuestions;
-	
+	@FXML
+	private ProgressIndicator progressIndicator;
 	@FXML
 	private BarChart<String,Integer> barChart;
 	
 	private MainApp mainApp;
-	
+	final NumberFormat formatter = new DecimalFormat("#0.00"); 
+	private  ExecutorService executor;
 	public void initialize() {
 		barChart.getXAxis().setLabel("Classes");
 		barChart.getYAxis().setLabel("Questions");
@@ -49,7 +57,7 @@ public class StatisticViewController {
 	public void setClasses(MainApp mainApp) {
 		this.mainApp = mainApp;
 		Classes classes = mainApp.getClasses();
-		NumberFormat formatter = new DecimalFormat("#0.00"); 
+		
 		averageLabel.setText(formatter.format(classes.getAverageQuestions()));
 		percentageQuestion.setText(formatter.format(mainApp.getProgressProperty().get()*100) + "%");
 		
@@ -68,11 +76,29 @@ public class StatisticViewController {
         //Process count keyword
         Task<Double> countKeywords = averageKeywordsPerQuestion(mainApp.getInstance().getKeywords());
         countKeywords.setOnSucceeded(arg0->{
-        	keywordsQuestions.setText(formatter.format(countKeywords.getValue()));
+        	if(countKeywords.getValue() != -1) {
+	        	keywordsQuestions.setText(formatter.format(countKeywords.getValue()));
+	        	progressIndicator.setProgress(1);
+	        	progressIndicator.setPrefHeight(19);
+	        	
+        	}
+        	mainApp.getInstance().getAchievementManager().displayAchievement(EnumAchievements.ACH_PATIENCE);
         });
-        new Thread(countKeywords).start();
+        executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+               Thread thread = new Thread(r);
+               thread.setDaemon(true);
+               return thread;
+            }
+        });
+        executor.submit(countKeywords);
+      
 	}
 	
+	public ExecutorService getExecutor() {
+		return executor;
+	}
 	private Task<Double> averageKeywordsPerQuestion(HashSet<String> keywords){
 		return new Task<Double>() {
 			
@@ -111,8 +137,13 @@ public class StatisticViewController {
 				}
 				return sizeMax;
 			}
-			private int averageKeyword(Element element) {
-				Element newElement = new Element(element.nodeName());
+
+			/**
+			 * This function browse the Element and (recursively)its children and count the number of keyword in the inner html
+			 * @param element The Element of the DOM Tree	
+			 * @return The number of keyword in the text of a node or its children
+			 */
+			private int getKeywordCount(Element element) {
 				List<Node> children = element.childNodes();
 				ArrayList<String> potentialKeywords = new ArrayList<String>();
 				Pattern wordPattern;
@@ -120,7 +151,7 @@ public class StatisticViewController {
 				int wordIndex = 0;
 				for(Node n : children) {
 					if(!n.nodeName().equals("#text")) {
-						res += averageKeyword((Element) n);
+						res += getKeywordCount((Element) n);
 					}
 					else {
 						String[] words = n.toString().split("((?<=[^A-z0-9-])|(?=[^A-z0-9-]))");
@@ -147,20 +178,34 @@ public class StatisticViewController {
 				}
 				return res;
 			}
+			/**
+			 * The main of the task, it will loop through the questions and count the keywords to return an average
+			 */
 			@Override
 			protected Double call() throws Exception {
 				ArrayList<Question> questions = new ArrayList<>(mainApp.getInstance().getQuestions().values());
 				int res = 0;
-				int questionSize = questions.size();
-				int index =0;
-				for(Question q : questions) {
-					index++;
-					String xml = "<body>" + q.getBody() + "</body>";
+				int questionCount = 0;
+				Iterator<Question> iteratorQuestion = questions.iterator();
+				Question question;
+				while(iteratorQuestion.hasNext()) {
+					if(Thread.currentThread().isInterrupted()) {//If interrupted thread
+						return -1d;
+					}
+					question = iteratorQuestion.next();
+					questionCount++;
+					String xml = "<body>" + question.getBody() + "</body>";
 					Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
 					Element body = doc.select("body").get(0);	
-					res += averageKeyword(body);
-				}
-							
+					res += getKeywordCount(body);
+					if(questionCount%100 == 0) {
+						final int resFinal = res;
+						final int questionCountFinal = questionCount;
+						Platform.runLater(() ->{//Update every hundred
+							keywordsQuestions.setText(formatter.format((double)resFinal/questionCountFinal));
+						});	
+					}
+				}			
 		        return (double)res/questions.size();
 			}		
 		};

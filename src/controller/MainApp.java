@@ -249,7 +249,7 @@ public class MainApp extends Application {
 	 * This function display a window with the statistic 
 	 */
 	public void displayStatistic() {
-		new StatisticStage(this).show();
+		new StatisticStage(this).showAndWait();
 	}
 	
 	/**
