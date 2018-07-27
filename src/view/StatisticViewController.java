@@ -82,9 +82,8 @@ public class StatisticViewController {
 	        	keywordsQuestions.setText(formatter.format(countKeywords.getValue()));
 	        	progressIndicator.setProgress(1);
 	        	progressIndicator.setPrefHeight(19);
-	        	
-        	}
-        	mainApp.getInstance().getAchievementManager().displayAchievement(EnumAchievements.ACH_PATIENCE);
+	        	mainApp.getInstance().getAchievementManager().displayAchievement(EnumAchievements.ACH_PATIENCE);
+        	}	
         });
         executor = Executors.newCachedThreadPool(new ThreadFactory() {
             @Override

@@ -203,6 +203,8 @@ public class ChooseClassDialogController {
 				case F2:
 					mainApp.getHostServices().showDocument(currentQuestion.getUrl());
 					break;
+				case F3:
+					mainApp.displayStatistic();
 				case ENTER:
 					if(!currentQuestion.isClassified()) {
 						for(Class choosenClass : potentialClasses) {
