@@ -28,16 +28,16 @@ public abstract class Post implements Serializable {
 	
 	/**
 	 * Create a post with all the attributes (null possible)
-	 * @param id The question id
-	 * @param creationDate the date when the answer has been created
-	 * @param deletionDate the date when the answer has been deleted, null if the answer hasn't been deleted
-	 * @param score The answer score on SO
-	 * @param body The answer body 
-	 * @param lastEditDate The last time the question has been edited
-	 * @param closedDate The date when the question has been closed (null if the answer is open)
-	 * @param communityOwnedDate The date when the answer started to belong to the community
-	 * @param owner The user that owns the answer
-	 * @param lastEditor The last editor of the answer
+	 * @param id The post id
+	 * @param creationDate the date when the post has been created
+	 * @param deletionDate the date when the post has been deleted, null if the post hasn't been deleted
+	 * @param score The post score on SO
+	 * @param body The post body 
+	 * @param lastEditDate The last time the post has been edited
+	 * @param closedDate The date when the post has been closed (null if the answer is open)
+	 * @param communityOwnedDate The date when the post started to belong to the community
+	 * @param owner The user that owns the post
+	 * @param lastEditor The last editor of the post
 	 **/
 	public Post(int id, Date creationDate, Date deletionDate, int score, String body, Date lastEditDate, Date closedDate,
 			Date communityOwnedDate, User owner, User lastEditor) {
@@ -186,7 +186,11 @@ public abstract class Post implements Serializable {
 	public Date getCommunityOwnedDate() {
 		return communityOwnedDate;
 	}
-
+	
+	/**
+	 * 
+	 * @param communityOwnedDate the date when the community owned the post
+	 */
 	public void setCommunityOwnedDate(Date communityOwnedDate) {
 		this.communityOwnedDate = communityOwnedDate;
 	}
@@ -215,6 +219,10 @@ public abstract class Post implements Serializable {
 		return owner;
 	}
 
+	/**
+	 * 
+	 * @param owner sets a new user that will own the post
+	 */
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
@@ -226,7 +234,11 @@ public abstract class Post implements Serializable {
 	public User getLastEditor() {
 		return lastEditor;
 	}
-
+	
+	/**
+	 * 
+	 * @param lastEditor to edit the post
+	 */
 	public void setLastEditor(User lastEditor) {
 		this.lastEditor = lastEditor;
 	}

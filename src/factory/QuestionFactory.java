@@ -30,11 +30,11 @@ public class QuestionFactory {
 	}
 	/**
 	 * Return all the questions in the database with the users,answers and comments 
-	 * @param users 
-	 * @param comments
-	 * @param answers
-	 * @return
-	 * @throws SQLException
+	 * @param users all he users in the database
+	 * @param comments all the comments in the database
+	 * @param answers all the answers in the database
+	 * @return an HashMap with question ids for key and questions for the values 
+	 * @throws SQLException An exception that provides information on a database access error or other errors.
 	 */
 	public HashMap<Integer, Question> getAllQuestions(HashMap<Integer, User> users, ArrayList<Comment> comments, HashMap<Integer, Answer> answers) throws SQLException {
 		HashMap<Integer, Question> questions = new HashMap<Integer, Question>();

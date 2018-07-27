@@ -42,7 +42,7 @@ public class MappingViewController {
 	}
 	/**
 	 * Set the items of the list
-	 * @param keyMapping the keyMapping of the MainApp
+	 * @param mainApp allows to get the key mapping
 	 */
 	public void setMappingData(MainApp mainApp) {
 		table.setItems(mainApp.getMappingData());

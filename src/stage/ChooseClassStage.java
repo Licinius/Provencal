@@ -18,9 +18,8 @@ import view.ChooseClassDialogController;
 public class ChooseClassStage extends Stage{
 	private CountDownLatch countDownLatch;	   
 	/**
-	 * Constructor of the Runnable
+	 * Stage constructor of a chooseClassView
 	 * @param mainApp The controller mainApp
-	 * @param questions All the questions to classified
 	 */
 	public ChooseClassStage(MainApp mainApp){
 		super();

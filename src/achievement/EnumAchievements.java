@@ -9,11 +9,20 @@ public enum EnumAchievements {
 	
 	private String message = "";
 	private String imagePath = "";
+	/**
+	 * Constructor of achievements
+	 * @param message the message displays on the achievement
+	 * @param imagePath the path to the image in the jar
+	 */
 	private EnumAchievements(String message,String imagePath) {
 		this.message = message;
 		this.imagePath = imagePath;
 	}
 	
+	/**
+	 * This function is fired to get the absolute path of the image
+	 * @return a string representing the image path 
+	 */
 	public String getImagePath() {
 		return getClass().getResource(this.imagePath).toString();
 	}

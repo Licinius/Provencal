@@ -53,7 +53,7 @@ public class MainApp extends Application {
 	private int classifiedQuestionsCount = 0;
 	
 	/**
-	 * Start the application, i.e. init the rootLayout, launch the task to classify
+	 * Start the application, i.e. initialize the rootLayout, launch the task to classify
 	 * the question
 	 */
 	@Override
@@ -116,7 +116,7 @@ public class MainApp extends Application {
 		return instance;
 	}
 	/**
-	 * @param keyMapping the keyMapping to sets (HashMap<KeyCode,Class)
+	 * @param keyMapping the keyMapping to set the instance key mapping 
 	 */
 	public void setKeyMapping(HashMap<KeyCode, Class> keyMapping) {
 		instance.setKeyMapping(keyMapping);
@@ -125,6 +125,11 @@ public class MainApp extends Application {
 	
 	/**
 	 * Initializes the root layout.
+	 * <ul>
+	 * <li> The stage with the view
+	 * <li> The icon of the application
+	 * <li> Set the close event to display an alert
+	 * </ul>
 	 */
 	public void initRootLayout() {
 		try {
@@ -199,7 +204,7 @@ public class MainApp extends Application {
 	 * Function fired to show the first ChooseClass
 	 */
 	private void showChooseClass() {
-		int total = instance.getQuestionsCount();
+		int total = instance.getQuestionCount();
 		progress.set((double) classifiedQuestionsCount / total);// How to set the progress
 		new ChooseClassStage(this).showAndWait();
 	}
@@ -213,7 +218,7 @@ public class MainApp extends Application {
 	 */
 	public void updateProgress(int increment) {
 		classifiedQuestionsCount += increment;
-		double newProgress = (double) classifiedQuestionsCount / instance.getQuestionsCount();
+		double newProgress = (double) classifiedQuestionsCount / instance.getQuestionCount();
 		if(newProgress>0.5)
 			instance.getAchievementManager().displayAchievement(EnumAchievements.ACH_MID_CLASS);
 		this.progress.set(newProgress);
@@ -230,7 +235,11 @@ public class MainApp extends Application {
 		FileChooser fileChooser = new FileChooser();
 		File file = fileChooser.showSaveDialog(getPrimaryStage());
 		if (file != null) {
-			instance.saveInstance(file.getAbsolutePath());
+			try {
+				instance.saveInstance(file.getAbsolutePath());
+			} catch (IOException e) {
+				new AlertException(e).showAndWait();
+			}
 			return true;
 		}
 		return false;
@@ -293,7 +302,7 @@ public class MainApp extends Application {
 	
 	/**
 	 * This function shows an alert when call<br>
-	 * This alert is used to know if the user wants to quit, save & quit or cancel
+	 * This alert is used to know if the user wants to quit, save &amp; quit or cancel
 	 * the operation
 	 * 
 	 * @param event
@@ -331,10 +340,9 @@ public class MainApp extends Application {
 	        protected Void call() {
 	        	QuestionFactory questionFactory = new QuestionFactory();
 				String filepathQuestions = "resources/questions.ser";
-				instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));			
+				instance.setQuestions(questionFactory.getAllSerializedQuestions(filepathQuestions));	
 				String filepathKeywords = "resources/keywords.ser";
-				String[] keywords = instance.generateKeywords(filepathKeywords);
-				instance.setKeywords(keywords);
+				instance.setKeywords(instance.generateKeywords(filepathKeywords));
 				return null;
 	        }
 	    };
@@ -363,8 +371,11 @@ public class MainApp extends Application {
 	}
 	
 	/**
-	 * Launch the application
-	 * @param args
+	 * The main() method is ignored in correctly deployed JavaFX application.
+	 * main() serves only as fallback in case the application can not be
+	 * launched through deployment artifacts, e.g., in IDEs with limited FX
+	 * support. NetBeans ignores main(). 
+	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
 		launch(args);

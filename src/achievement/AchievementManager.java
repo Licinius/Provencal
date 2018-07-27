@@ -9,7 +9,11 @@ import javafx.util.Duration;
 import tray.animations.AnimationType;
 import tray.notification.TrayNotification;
 
-
+/**
+ * This class is use to manage all achievements
+ * @author Dell'omo	
+ *
+ */
 public class AchievementManager implements Serializable {
 	
 	/**
@@ -18,17 +22,25 @@ public class AchievementManager implements Serializable {
 	private static final long serialVersionUID = -8249840998858189882L;
 	HashSet<EnumAchievements> achievements;
 	
+	/**
+	 * Constructor to initialize the achievement HashSet
+	 */
 	public AchievementManager() {
 		achievements = new HashSet<>();
 	}
 	
+	/**
+	 * Class constructor specifying the achievements
+	 * @param achievements the achievements to set in the AchievementManager
+	 */
 	public AchievementManager(HashSet<EnumAchievements> achievements) {
 		this.achievements = achievements;
 	}
+	
 	/**
-	 * Display a achievement if it was not already display
-	 * @param achievement The achievement to display
-	 * @return True if the achievement is display
+	 * Display a achievement if it did not already display
+	 * @param achievement the achievement displays to the user
+	 * @return True if the achievement is displayed
 	 */
 	public boolean displayAchievement(EnumAchievements achievement) {
 		if(!achievements.contains(achievement)) {
@@ -36,7 +48,6 @@ public class AchievementManager implements Serializable {
 			Image image = new Image(achievement.getImagePath());
 			String title = "Achievement unlocked";
 	        String message = achievement.toString();
-	        
 	        TrayNotification tray = new TrayNotification();
 	        tray.setTitle(title);
 	        tray.setAnimationType(AnimationType.POPUP);

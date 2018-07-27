@@ -51,10 +51,12 @@ public class StatisticViewController {
 		barChart.getXAxis().setLabel("Classes");
 		barChart.getYAxis().setLabel("Questions");
 	}
+	
 	/**
-	 * @param classes to know the information to display
+	 * Set statistics on the current classification, information like distribution or average of keywords will be displayed
+	 * @param mainApp the main controller allows to get all the information needed
 	 */
-	public void setClasses(MainApp mainApp) {
+	public void setStatistic(MainApp mainApp) {
 		this.mainApp = mainApp;
 		Classes classes = mainApp.getClasses();
 		

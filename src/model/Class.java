@@ -34,7 +34,7 @@ public class Class implements Serializable,Collection<Question> {
 	}
 	
 	/**
-	 * This function is used by the factory {@see ListOverviewController}
+	 * This function is used by the factory {@link view.ListOverviewController}
 	 * @return the questions size
 	 */
 	public int getQuestionCount() {

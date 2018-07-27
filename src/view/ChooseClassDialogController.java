@@ -50,8 +50,9 @@ public class ChooseClassDialogController {
 	 * This function return an anchorPane to insert in the gridPane
 	 * It also adds the controller and the pane to the Hashmap
 	 * @param question a Question to format in a QuestionView
+	 * @param highlight a boolean to know whether or not the keywords are highlight
 	 * @return The AnchorPane to attach to the GridPane
-	 * @throws IOException
+	 * @throws IOException Throw a exception if the loader can't load the view 
 	 */
 	private GridPane getQuestionPane(Question question,boolean highlight) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -64,11 +65,9 @@ public class ChooseClassDialogController {
 	
 	/**
 	 * This function initialized the dialog with the question in the class
-	 * @param mainApp
-	 * @param questions
-	 * @throws IOException
+	 * @param mainApp the mainController allows to get information on the instance
 	 */
-	public void initDialog(MainApp mainApp) throws IOException {
+	public void initDialog(MainApp mainApp){
 		this.mainApp = mainApp;
 		this.questions = new ArrayList<>(mainApp.getInstance().getQuestions().values());
 		currentQuestion = nextUnclassifiedQuestion();

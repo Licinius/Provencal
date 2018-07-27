@@ -81,6 +81,8 @@ public class QuestionViewController {
 	/**
 	 * Set the information of a question in the view
 	 * @param question The question to set
+	 * @param keywords the keywords of the instance
+	 * @param highlight true if the keyword must be highlight
 	 */
 	public void setQuestion(Question question, HashSet<String> keywords,boolean highlight){
 		this.keywords = keywords;

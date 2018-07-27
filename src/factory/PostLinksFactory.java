@@ -30,19 +30,20 @@ public class PostLinksFactory {
 		}
 		return postLinks;
 	}
+
 	/**
 	 * Call {@link #getPostLinks(String) getPostLinks} with a the default table parameter
 	 * @return an arrayList of PostLink
-	 * @throws SQLException 
+	 * @throws SQLException an exception that provides information on a database access error or other errors.
 	 */
 	public ArrayList<PostLink> getPostLinks() throws SQLException{
 		return getPostLinks("Postlinks");
 	}
 	/**
 	 * This function will create the postLink with dummy Question
-	 * @param view
-	 * @return
-	 * @throws SQLException
+	 * @param view is the name of the view or table in the database
+	 * @return a representation java of the postlinks in the database
+	 * @throws SQLException An exception that provides information on a database access error or other errors.
 	 */
 	public ArrayList<PostLink> getPostLinks(String view) throws SQLException{
 		ArrayList<PostLink> postLinks = new ArrayList<PostLink>();
