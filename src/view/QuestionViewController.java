@@ -197,16 +197,18 @@ public class QuestionViewController {
 				List<Node> children = element.childNodes();
 				ArrayList<String> potentialKeywords = new ArrayList<String>();
 				Pattern wordPattern;
-				int wordIndex = 0;
+				int wordIndex;
 				for(Node n : children) {
 					if(!n.nodeName().equals("#text")) {
 						newElement.appendChild(formatElement((Element) n));
 					}
 					else {
+						wordIndex = 0;
 						String[] words = n.toString().split("((?<=[^A-z0-9-])|(?=[^A-z0-9-]))");
 						while(wordIndex<words.length) {
 							potentialKeywords.clear();
 							String word = words[wordIndex];
+							System.out.println(n.toString());
 							TextNode text = new TextNode(word);
 							if(!word.trim().isEmpty()) {
 								wordPattern = Pattern.compile("^(?i)\\b" + Pattern.quote(word) + "\\b.*");
