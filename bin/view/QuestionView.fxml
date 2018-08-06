@@ -37,7 +37,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label maxHeight="1.7976931348623157E308" text=" Classes :" />
+            <Label maxHeight="1.7976931348623157E308" text=" Classes : " />
             <Label fx:id="classes" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
          </children>
       </GridPane>
