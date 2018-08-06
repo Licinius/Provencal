@@ -208,7 +208,6 @@ public class QuestionViewController {
 						while(wordIndex<words.length) {
 							potentialKeywords.clear();
 							String word = words[wordIndex];
-							System.out.println(n.toString());
 							TextNode text = new TextNode(word);
 							if(!word.trim().isEmpty()) {
 								wordPattern = Pattern.compile("^(?i)\\b" + Pattern.quote(word) + "\\b.*");
